@@ -29,6 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final _formKey = GlobalKey<FormState>();
   bool keepLogged = false;
+  bool showPassword = false;
   String email = "";
   String password = "";
 
@@ -47,7 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
             children: [
               Container(
                 margin: const EdgeInsets.only(bottom: 20.0),
-                height: 40.0,
+                height: 80.0,
                 width: double.infinity,
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(colors: [
@@ -298,7 +299,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                               TextFormField(
                                 validator: (value) {
-                                   if (value == null || value.isEmpty) {
+                                  if (value == null || value.isEmpty) {
                                     return "Field 'password' must be filled.";
                                   }
                                 },
@@ -307,23 +308,39 @@ class _LoginScreenState extends State<LoginScreen> {
                                     password = value;
                                   });
                                 },
-                                obscureText: true,
+                                obscureText: !showPassword,
                                 keyboardType: TextInputType.visiblePassword,
                                 cursorColor: Colors.lightGreen,
-                                decoration: const InputDecoration(
-                                 errorBorder: UnderlineInputBorder(
+                                decoration: InputDecoration(
+                                  suffixIcon: GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        showPassword = !showPassword;
+                                      });
+                                    },
+                                    child: showPassword
+                                        ? const Icon(
+                                            Icons.lock,
+                                            size: 25.0,
+                                          )
+                                        : const Icon(
+                                            Icons.lock_open,
+                                            size: 25.0,
+                                          ),
+                                  ),
+                                  errorBorder: const UnderlineInputBorder(
                                     borderSide: BorderSide(color: Colors.grey),
                                   ),
-                                  enabledBorder: UnderlineInputBorder(
+                                  enabledBorder: const UnderlineInputBorder(
                                     borderSide: BorderSide(color: Colors.grey),
                                   ),
-                                  focusedBorder: UnderlineInputBorder(
+                                  focusedBorder: const UnderlineInputBorder(
                                     borderSide: BorderSide(color: Colors.green),
                                   ),
-                                  disabledBorder: UnderlineInputBorder(
+                                  disabledBorder: const UnderlineInputBorder(
                                     borderSide: BorderSide(color: Colors.grey),
                                   ),
-                                  border: UnderlineInputBorder(
+                                  border: const UnderlineInputBorder(
                                     borderSide: BorderSide(color: Colors.grey),
                                   ),
                                 ),
@@ -354,9 +371,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               Center(
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    if (_formKey.currentState!.validate()) {
-                                      
-                                    }
+                                    if (_formKey.currentState!.validate()) {}
                                   },
                                   style: ElevatedButton.styleFrom(
                                     primary: Colors.lightGreen[900],
