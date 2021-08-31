@@ -10,9 +10,28 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  String validatePassword(String? value) {
+    if (value == "") {
+      return "Field 'password' must be filled.";
+    }
+    return "";
+  }
+
+  String validateEmail(String? value) {
+    if (value == "") {
+      return "Field 'email' must be filled.";
+    }
+    if (!value!.contains('@') && value != "") {
+      return "Field 'Email' invalid.";
+    }
+    return "";
+  }
+
+  final _formKey = GlobalKey<FormState>();
   bool keepLogged = false;
   String email = "";
   String password = "";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
             children: [
               Container(
                 margin: const EdgeInsets.only(bottom: 20.0),
-                height: 60.0,
+                height: 40.0,
                 width: double.infinity,
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(colors: [
@@ -210,7 +229,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Checkbox(
-                                side: const BorderSide(color: Colors.lightGreen),
+                                side:
+                                    const BorderSide(color: Colors.lightGreen),
                                 checkColor: Colors.black, // color of tick Mark
                                 activeColor: Colors.grey,
                                 value: keepLogged,
@@ -222,10 +242,10 @@ class _LoginScreenState extends State<LoginScreen> {
                             const Text(
                               "Keep me logged",
                             ),
-                            
                           ],
                         ),
                         Form(
+                          key: _formKey,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -235,7 +255,16 @@ class _LoginScreenState extends State<LoginScreen> {
                               const Text(
                                 "E-mail",
                               ),
-                              TextField(
+                              TextFormField(
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return "Field 'email' must be filled.";
+                                  }
+                                  if (!value.contains('@') && value != "") {
+                                    return "Field 'Email' invalid.";
+                                  }
+                                  return "";
+                                },
                                 onChanged: (String value) {
                                   setState(() {
                                     email = value;
@@ -244,11 +273,20 @@ class _LoginScreenState extends State<LoginScreen> {
                                 keyboardType: TextInputType.emailAddress,
                                 cursorColor: Colors.lightGreen,
                                 decoration: const InputDecoration(
+                                  errorBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.grey),
+                                  ),
                                   enabledBorder: UnderlineInputBorder(
                                     borderSide: BorderSide(color: Colors.grey),
                                   ),
                                   focusedBorder: UnderlineInputBorder(
                                     borderSide: BorderSide(color: Colors.green),
+                                  ),
+                                  disabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.grey),
+                                  ),
+                                  border: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.grey),
                                   ),
                                 ),
                               ),
@@ -258,7 +296,12 @@ class _LoginScreenState extends State<LoginScreen> {
                               const Text(
                                 "Password",
                               ),
-                              TextField(
+                              TextFormField(
+                                validator: (value) {
+                                   if (value == null || value.isEmpty) {
+                                    return "Field 'password' must be filled.";
+                                  }
+                                },
                                 onChanged: (String value) {
                                   setState(() {
                                     password = value;
@@ -268,11 +311,20 @@ class _LoginScreenState extends State<LoginScreen> {
                                 keyboardType: TextInputType.visiblePassword,
                                 cursorColor: Colors.lightGreen,
                                 decoration: const InputDecoration(
+                                 errorBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.grey),
+                                  ),
                                   enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.red),
+                                    borderSide: BorderSide(color: Colors.grey),
                                   ),
                                   focusedBorder: UnderlineInputBorder(
                                     borderSide: BorderSide(color: Colors.green),
+                                  ),
+                                  disabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.grey),
+                                  ),
+                                  border: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.grey),
                                   ),
                                 ),
                               ),
@@ -301,7 +353,11 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                               Center(
                                 child: ElevatedButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    if (_formKey.currentState!.validate()) {
+                                      
+                                    }
+                                  },
                                   style: ElevatedButton.styleFrom(
                                     primary: Colors.lightGreen[900],
                                     shape: RoundedRectangleBorder(
