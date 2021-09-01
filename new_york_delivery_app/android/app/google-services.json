@@ -1,0 +1,79 @@
+{
+  "project_info": {
+    "project_number": "625405167152",
+    "firebase_url": "https://new-york-deli-6bf9b.firebaseio.com",
+    "project_id": "new-york-deli-6bf9b",
+    "storage_bucket": "new-york-deli-6bf9b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:625405167152:android:1368a39feebd625dd9cff5",
+        "android_client_info": {
+          "package_name": "com.ftc.newyorkdeli"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "625405167152-7n5j43bio1irg988ui4s24el2farcabo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ftc.newyorkdeli",
+            "certificate_hash": "984aff111412ef962e0784fd30da3e26b407c2e4"
+          }
+        },
+        {
+          "client_id": "625405167152-7ocp8b6019dr9t29q5a6a3a7ag8msuja.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ftc.newyorkdeli",
+            "certificate_hash": "553e9f4805c9228f8cc35c1066f330f417ab59e3"
+          }
+        },
+        {
+          "client_id": "625405167152-bdrfu94lchc1273hepsh4r2jppv9u316.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ftc.newyorkdeli",
+            "certificate_hash": "c6852c6c3c51ea7332e1103cee61d3c29b09590a"
+          }
+        },
+        {
+          "client_id": "625405167152-shjfhjqgmes1vrknibmb419ehvgdqmfb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ftc.newyorkdeli",
+            "certificate_hash": "485f67b076a3b235ad0e88e36fc73ed50f4a4b1b"
+          }
+        },
+        {
+          "client_id": "625405167152-bhfkhs7qgntktru9im6kh756u7ss41ql.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfBJI_Xp9lWGSy5DBvOsUzyXmTkAgvcGI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "625405167152-bhfkhs7qgntktru9im6kh756u7ss41ql.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "625405167152-s6evnn1ql5eqbrn29kusl8ajji1vht96.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.ftc.newyorkdelidelivery"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

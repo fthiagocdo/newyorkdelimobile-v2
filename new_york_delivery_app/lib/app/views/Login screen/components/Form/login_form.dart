@@ -1,6 +1,11 @@
+import 'package:dio/dio.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
+import 'package:new_york_delivery_app/app/repositories/API_client.repositories.dart';
 import 'package:new_york_delivery_app/app/views/Login%20screen/components/MainButton/main_button.dart';
 import 'package:new_york_delivery_app/app/views/Login%20screen/components/TextInput/text_input.dart';
+import 'package:new_york_delivery_app/app/services/firebase/firebase_auth.dart';
 
 class FormLogin extends StatefulWidget {
   const FormLogin({Key? key}) : super(key: key);
@@ -10,14 +15,16 @@ class FormLogin extends StatefulWidget {
 }
 
 class _FormState extends State<FormLogin> {
-  String email = "";
-  String password = "";
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   bool keepLogged = false;
   bool showPassword = false;
-  final _formKey = GlobalKey<FormState>();
-  
+
   @override
   Widget build(BuildContext context) {
+    ApiClientRepository _clientRepository = Modular.get<ApiClientRepository>();
+
     return Form(
       key: _formKey,
       child: Column(
@@ -59,15 +66,11 @@ class _FormState extends State<FormLogin> {
               if (!value.contains('@') && value != "") {
                 return "Field 'Email' invalid.";
               }
-              return "";
+              return null;
             },
             cursorColor: Colors.lightGreen,
             keyboardType: TextInputType.emailAddress,
-            onChange: (String? value) {
-              setState(() {
-                email = value!;
-              });
-            },
+            controller: _emailController,
           ),
           const SizedBox(
             height: 10.0,
@@ -80,12 +83,9 @@ class _FormState extends State<FormLogin> {
               if (value == null || value.isEmpty) {
                 return "Field 'password' must be filled.";
               }
+              return null;
             },
-            onChange: (String? value) {
-              setState(() {
-                password = value!;
-              });
-            },
+            controller: _passwordController,
             keyboardType: TextInputType.visiblePassword,
             hasSuffixIcon: true,
             label: "",
@@ -101,10 +101,12 @@ class _FormState extends State<FormLogin> {
                   ? const Icon(
                       Icons.lock,
                       size: 25.0,
+                      color: Color(0xFF4f4d1f)
                     )
                   : const Icon(
                       Icons.lock_open,
                       size: 25.0,
+                      color: Color(0xFF4f4d1f),
                     ),
             ),
           ),
@@ -119,7 +121,7 @@ class _FormState extends State<FormLogin> {
                 child: const Text(
                   "RESET PASSWORD",
                   style: TextStyle(
-                    color: Colors.lightGreen,
+                    color: Color(0xFF4f4d1f),
                   ),
                 ),
               ),
@@ -134,9 +136,23 @@ class _FormState extends State<FormLogin> {
           Center(
             child: MainButton(
               text: "LOG IN",
-              buttonColor: Colors.lightGreen,
-              onPress: () {
-                if (_formKey.currentState!.validate()) {}
+              buttonColor: Color(0xFF4f4d1f),
+              onPress: () async {
+                  
+                if (_formKey.currentState!.validate()) {
+                  
+                  User? user = await signInUsingEmailPassword(
+                    email: _emailController.text,
+                    password: _passwordController.text,
+                    context: context,
+                  );
+                  if (user != null) {
+                    Response result = await _clientRepository.getUser(_emailController.text, _passwordController.text);
+                    print("Passei");
+                  }else{
+                    
+                  }
+                }
               },
             ),
           ),

@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
@@ -12,11 +13,15 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  Future<FirebaseApp> _initializeFirebase() async {
+    FirebaseApp firebaseApp = await Firebase.initializeApp();
+    return firebaseApp;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        
         title: const Text(
           "Login",
           style: TextStyle(fontFamily: "KGBrokenVesselsSketch"),
@@ -24,65 +29,81 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
       drawer: const Menu(),
       body: SafeArea(
-        child: Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage(
-                "assets/images/background.png",
-              ),
-              fit: BoxFit.fill,
-            ),
-          ),
-          child: ListView(
-            children: [
-              Column(
-                children: [
-                  const SizedBox(
-                    height: 10.0,
-                  ),
-                  Container(
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                      color: Colors.white,
+        child: FutureBuilder(
+          future: _initializeFirebase(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              return Container(
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(
+                      "assets/images/background.png",
                     ),
-                    padding: const EdgeInsets.all(10.0),
-                    margin: const EdgeInsets.all(15.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    fit: BoxFit.fill,
+                  ),
+                ),
+                child: ListView(
+                  children: [
+                    Column(
                       children: [
                         const SizedBox(
                           height: 10.0,
                         ),
-                        Row(
-                          children: [
-                            const Text("Don't have an account? ",
-                                style: TextStyle(fontSize: 12.0)),
-                            GestureDetector(
-                              onTap: () {},
-                              child: const Text(
-                                "Click Here ",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w800,
-                                    fontSize: 12.0),
+                        Container(
+                          decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            color: Colors.white,
+                          ),
+                          padding: const EdgeInsets.all(10.0),
+                          margin: const EdgeInsets.all(15.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(
+                                height: 10.0,
                               ),
-                            ),
-                            const Text(
-                              "to sign up.",
-                              style: TextStyle(fontSize: 12.0),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 10.0,
-                        ),
-                        const FormLogin(),
+                              Row(
+                                children: [
+                                  const Text("Don't have an account? ",
+                                      style: TextStyle(
+                                          fontSize: 12.0,
+                                          color: Color(0xFF4f4d1f))),
+                                  GestureDetector(
+                                    onTap: () {},
+                                    child: const Text(
+                                      "Click Here ",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w800,
+                                          fontSize: 12.0,
+                                          color: Color(0xFF4f4d1f)),
+                                    ),
+                                  ),
+                                  const Text(
+                                    "to sign up.",
+                                    style: TextStyle(
+                                        fontSize: 12.0,
+                                        color: Color(0xFF4f4d1f)),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 10.0,
+                              ),
+                              const FormLogin(),
+                            ],
+                          ),
+                        )
                       ],
                     ),
-                  )
-                ],
-              ),
-            ],
-          ),
+                  ],
+                ),
+              );
+            } else {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+          },
         ),
       ),
     );

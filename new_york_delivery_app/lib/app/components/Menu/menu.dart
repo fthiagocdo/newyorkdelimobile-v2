@@ -15,7 +15,7 @@ class Menu extends StatelessWidget {
               decoration: const BoxDecoration(
                 gradient: LinearGradient(colors: [
                   // Colors are easy thanks to Flutter's Colors class.
-                  Colors.green,
+                  Color(0xFF4f4d1f),
                   Colors.lightGreen,
                 ], begin: Alignment.topLeft, end: Alignment.bottomRight),
               ),
@@ -37,23 +37,23 @@ class Menu extends StatelessWidget {
             ),
           ),
           ListTile(
-            leading: Icon(Icons.menu,color: Colors.lightGreen[900],),
-            title:  Text('Menu', style: TextStyle(color: Colors.lightGreen[900]),),
+            leading: const Icon(Icons.menu,color: Color(0xFF4f4d1f),),
+            title: const Text('Menu', style: TextStyle(color: Color(0xFF4f4d1f)),),
             onTap: (){},
           ),
            ListTile(
-            leading: Icon(Icons.home, color: Colors.lightGreen[900]),
-            title:  Text('Home', style: TextStyle(color: Colors.lightGreen[900])),
+            leading: const Icon(Icons.home, color: Color(0xFF4f4d1f)),
+            title: const Text('Home', style: TextStyle(color: Color(0xFF4f4d1f))),
             onTap: (){},
           ),
            ListTile(
-            leading:  Icon(Icons.email, color: Colors.lightGreen[900]),
-            title:  Text('Contact Us', style: TextStyle(color: Colors.lightGreen[900])),
+            leading:  const Icon(Icons.email, color: Color(0xFF4f4d1f)),
+            title:  const Text('Contact Us', style: TextStyle(color: Color(0xFF4f4d1f))),
             onTap: (){},
           ),
            ListTile(
-            leading:  Icon(Icons.login, color: Colors.lightGreen[900]),
-            title:  Text('Login', style: TextStyle(color: Colors.lightGreen[900])),
+            leading:  const Icon(Icons.login, color: Color(0xFF4f4d1f)),
+            title:  const Text('Login', style: TextStyle(color: Color(0xFF4f4d1f))),
             onTap: (){},
           ),
         ],

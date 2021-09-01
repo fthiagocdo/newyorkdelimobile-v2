@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_modular/src/presenters/modular_base.dart';
 import 'package:new_york_delivery_app/app/views/Login%20screen/login.screen.dart';
 
 class NewWorkDeliApp extends StatelessWidget {
@@ -9,10 +10,12 @@ class NewWorkDeliApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        primaryColor: Colors.lightGreen[900],
+        primaryColor: Color(0xFF4f4d1f),
+        
       ),
       title: "New Work Deli",
-      home: const LoginScreen(),
-    );
+      initialRoute: "/Login",
+      // home: const LoginScreen(),
+    ).modular();
   }
 }

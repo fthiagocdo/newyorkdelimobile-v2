@@ -9,11 +9,12 @@ class TextInput extends StatelessWidget {
       required this.label,
       required this.showContent,
       required this.cursorColor,
-      required this.suffixIcon, required this.validation, required this.onChange})
+      required this.suffixIcon, required this.validation, required this.controller})
       : super(key: key);
 
   final String? Function(String?) validation;
-  final void Function(String?) onChange;
+  // final void Function(String?) onChange;
+  final TextEditingController controller;
   final TextInputType keyboardType;
   final bool hasSuffixIcon;
   final String label;
@@ -24,8 +25,9 @@ class TextInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      controller: controller,
       validator: validation,
-      onChanged: onChange,
+      // onChanged: onChange,
       obscureText: !showContent,
       keyboardType: keyboardType,
       cursorColor: cursorColor,
