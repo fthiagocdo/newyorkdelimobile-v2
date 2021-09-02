@@ -62,6 +62,11 @@ Future<User?> registerUsingEmailPassword({
     return user;
   }
 
+  Future<void> sendPasswordResetEmail(String email) async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    return auth.sendPasswordResetEmail(email: email);
+  }
+
 // Future<FirebaseApp> _initializeFirebase() async {
 //     FirebaseApp firebaseApp = await Firebase.initializeApp();
 //     User? user = FirebaseAuth.instance.currentUser;
