@@ -17,14 +17,13 @@ class ApiClientRepository implements IApiClient{
 
   @override
   Future findOrCreateUser(String email, String provideID, String provide) async{
-    // TODO: implement findOrCreateUser
-    throw UnimplementedError();
+    Response result = await client.post(mainURL+'user/save', {"email":email,"provideID":provideID,"provide":provide});
+    return result;
   }
 
   @override
   Future getUser(String email, String password) async{
     Response result = await client.get(mainURL+'user/get', {"email":email,"password":password});
-    print("Passei 2");
     return result;
   }
 

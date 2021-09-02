@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class MainButton extends StatelessWidget {
-  const MainButton({Key? key, required this.text, required this.onPress, required this.buttonColor}) : super(key: key);
+  const MainButton({Key? key, required this.text, required this.onPress, required this.buttonColor, this.sizeWidth = 250.0}) : super(key: key);
 
   final String text;
   final Function() onPress;
   final Color buttonColor;
+  final double sizeWidth;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,7 @@ class MainButton extends StatelessWidget {
         ),
       ),
       child: SizedBox(
-        width: 250,
+        width: sizeWidth,
         height: 30.0,
         child: Center(
           child: Text(

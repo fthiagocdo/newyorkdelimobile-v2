@@ -25,6 +25,7 @@ class TextInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      style: const TextStyle(color: Color(0xFF4f4d1f),),
       controller: controller,
       validator: validation,
       // onChanged: onChange,
@@ -32,9 +33,13 @@ class TextInput extends StatelessWidget {
       keyboardType: keyboardType,
       cursorColor: cursorColor,
       decoration: InputDecoration(
+        labelText: label != ""? label: null,
+        labelStyle: const TextStyle(
+          color: Color(0xFF4f4d1f),
+        ),
         suffixIcon: hasSuffixIcon ? suffixIcon : null,
         focusedErrorBorder:const UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.green),
+          borderSide: BorderSide(color: Color(0xFF4f4d1f)),
         ),
         errorBorder: const UnderlineInputBorder(
           borderSide: BorderSide(color: Colors.grey),
@@ -43,7 +48,7 @@ class TextInput extends StatelessWidget {
           borderSide: BorderSide(color: Colors.grey),
         ),
         focusedBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.green),
+          borderSide: BorderSide(color: Color(0xFF4f4d1f)),
         ),
         disabledBorder: const UnderlineInputBorder(
           borderSide: BorderSide(color: Colors.grey),

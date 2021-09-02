@@ -1,7 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
-
+Future<FirebaseApp> initializeFirebase() async {
+    FirebaseApp firebaseApp = await Firebase.initializeApp();
+    return firebaseApp;
+}
 
 Future<User?> signInUsingEmailPassword({
   required String email,
@@ -29,7 +33,7 @@ Future<User?> signInUsingEmailPassword({
 }
 
 Future<User?> registerUsingEmailPassword({
-    required String name,
+    // required String name,
     required String email,
     required String password,
   }) async {
@@ -41,8 +45,8 @@ Future<User?> registerUsingEmailPassword({
         password: password,
       );
       user = userCredential.user;
-      await user!.updateDisplayName(name);
-      await user.reload();
+      // await user!.updateDisplayName(name);
+      // await user.reload();
       user = auth.currentUser;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -54,7 +58,7 @@ Future<User?> registerUsingEmailPassword({
       print(e);
     }
 
-    user!.sendEmailVerification();
+    // user!.sendEmailVerification();
     return user;
   }
 

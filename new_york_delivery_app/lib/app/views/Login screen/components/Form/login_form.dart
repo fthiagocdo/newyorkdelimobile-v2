@@ -2,9 +2,9 @@ import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:new_york_delivery_app/app/components/MainButton/main_button.dart';
+import 'package:new_york_delivery_app/app/components/TextInput/text_input.dart';
 import 'package:new_york_delivery_app/app/repositories/API_client.repositories.dart';
-import 'package:new_york_delivery_app/app/views/Login%20screen/components/MainButton/main_button.dart';
-import 'package:new_york_delivery_app/app/views/Login%20screen/components/TextInput/text_input.dart';
 import 'package:new_york_delivery_app/app/services/firebase/firebase_auth.dart';
 
 class FormLogin extends StatefulWidget {

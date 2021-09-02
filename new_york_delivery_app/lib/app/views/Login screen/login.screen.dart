@@ -1,10 +1,10 @@
-import 'package:firebase_core/firebase_core.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
 import 'package:new_york_delivery_app/app/components/Menu/menu.dart';
 import 'package:new_york_delivery_app/app/views/Login%20screen/components/Form/login_form.dart';
-
+import 'package:new_york_delivery_app/app/services/firebase/firebase_auth.dart';
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
 
@@ -13,10 +13,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  Future<FirebaseApp> _initializeFirebase() async {
-    FirebaseApp firebaseApp = await Firebase.initializeApp();
-    return firebaseApp;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
       drawer: const Menu(),
       body: SafeArea(
         child: FutureBuilder(
-          future: _initializeFirebase(),
+          future: initializeFirebase(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               return Container(
