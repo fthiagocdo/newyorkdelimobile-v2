@@ -14,7 +14,7 @@ class NewWorkDeliApp extends StatelessWidget {
         
       ),
       title: "New Work Deli",
-      initialRoute: "/Reset-password",
+      initialRoute: "/Login",
       // home: const LoginScreen(),
     ).modular();
   }

@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:new_york_delivery_app/app/components/Menu/menu.dart';
 import 'package:new_york_delivery_app/app/views/Login%20screen/components/Form/login_form.dart';
 import 'package:new_york_delivery_app/app/services/firebase/firebase_auth.dart';
@@ -65,7 +66,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                           fontSize: 12.0,
                                           color: Color(0xFF4f4d1f))),
                                   GestureDetector(
-                                    onTap: () {},
+                                    onTap: () {
+                                      Modular.to.pushNamed('/Sign-up');
+                                    },
                                     child: const Text(
                                       "Click Here ",
                                       style: TextStyle(

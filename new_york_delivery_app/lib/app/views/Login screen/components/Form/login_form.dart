@@ -117,7 +117,9 @@ class _FormState extends State<FormLogin> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  Modular.to.pushNamed('/Reset-password');
+                },
                 child: const Text(
                   "RESET PASSWORD",
                   style: TextStyle(
