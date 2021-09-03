@@ -27,9 +27,18 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
       message:
           'Please verify your mailbox to find an e-mail to help you to reset your password.',
       context: context,
-      onPress: () {
-        Navigator.pop(context);
-      },
+      actions: [
+        Center(
+          child: MainButton(
+            text: "OK",
+            buttonColor: const Color(0xFF4f4d1f),
+            sizeWidth: 100.0,
+            onPress: () {
+              Navigator.popUntil(context, ModalRoute.withName('/Login'));
+            },
+          ),
+        ),
+      ],
     );
   }
 

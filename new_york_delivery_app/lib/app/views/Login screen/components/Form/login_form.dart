@@ -6,6 +6,7 @@ import 'package:new_york_delivery_app/app/components/MainButton/main_button.dart
 import 'package:new_york_delivery_app/app/components/TextInput/text_input.dart';
 import 'package:new_york_delivery_app/app/repositories/API_client.repositories.dart';
 import 'package:new_york_delivery_app/app/services/firebase/firebase_auth.dart';
+import 'package:new_york_delivery_app/app/utlis/show_dialog.dart';
 
 class FormLogin extends StatefulWidget {
   const FormLogin({Key? key}) : super(key: key);
@@ -24,6 +25,63 @@ class _FormState extends State<FormLogin> {
   @override
   Widget build(BuildContext context) {
     ApiClientRepository _clientRepository = Modular.get<ApiClientRepository>();
+
+    void _login() async {
+      User? user = await signInUsingEmailPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+        context: context,
+      );
+      if (user != null) {
+        if (!user.emailVerified) {
+          ShowDialog(
+            title: "Message",
+            message: "Email not verified. Resend email verification?",
+            context: context,
+            actions: [
+              MainButton(
+                text: "YES",
+                buttonColor: const Color(0xFF4f4d1f),
+                sizeWidth: 50.0,
+                onPress: () async {
+                  await user.sendEmailVerification();
+                  ShowDialog(
+                    title: "Message",
+                    message:
+                        "Please validate your email address. Kindly check your inbox.",
+                    context: context,
+                    actions: [
+                      Center(
+                        child: MainButton(
+                          sizeWidth: 80,
+                          text: "OK",
+                          buttonColor: const Color(0xFF4f4d1f),
+                          onPress: () async {
+                            Navigator.popUntil(
+                                context, ModalRoute.withName('/Login'));
+                          },
+                        ),
+                      )
+                    ],
+                  );
+                },
+              ),
+              MainButton(
+                text: "NO",
+                buttonColor: const Color(0xFF4f4d1f),
+                sizeWidth: 50.0,
+                onPress: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+          return;
+        }
+        Response result = await _clientRepository.getUser(
+            _emailController.text, _passwordController.text);
+      } else {}
+    }
 
     return Form(
       key: _formKey,
@@ -101,7 +159,7 @@ class _FormState extends State<FormLogin> {
                   ? const Icon(
                       Icons.lock,
                       size: 25.0,
-                      color: Color(0xFF4f4d1f)
+                      color: Color(0xFF4f4d1f),
                     )
                   : const Icon(
                       Icons.lock_open,
@@ -138,22 +196,10 @@ class _FormState extends State<FormLogin> {
           Center(
             child: MainButton(
               text: "LOG IN",
-              buttonColor: Color(0xFF4f4d1f),
+              buttonColor: const Color(0xFF4f4d1f),
               onPress: () async {
-                  
                 if (_formKey.currentState!.validate()) {
-                  
-                  User? user = await signInUsingEmailPassword(
-                    email: _emailController.text,
-                    password: _passwordController.text,
-                    context: context,
-                  );
-                  if (user != null) {
-                    Response result = await _clientRepository.getUser(_emailController.text, _passwordController.text);
-                    print("Passei");
-                  }else{
-                    
-                  }
+                  _login();
                 }
               },
             ),

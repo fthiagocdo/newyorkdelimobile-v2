@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
@@ -6,6 +5,7 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:new_york_delivery_app/app/components/Menu/menu.dart';
 import 'package:new_york_delivery_app/app/views/Login%20screen/components/Form/login_form.dart';
 import 'package:new_york_delivery_app/app/services/firebase/firebase_auth.dart';
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
 
@@ -14,7 +14,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,10 +60,12 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                               Row(
                                 children: [
-                                  const Text("Don't have an account? ",
-                                      style: TextStyle(
-                                          fontSize: 12.0,
-                                          color: Color(0xFF4f4d1f))),
+                                  const Text(
+                                    "Don't have an account? ",
+                                    style: TextStyle(
+                                        fontSize: 12.0,
+                                        color: Color(0xFF4f4d1f)),
+                                  ),
                                   GestureDetector(
                                     onTap: () {
                                       Modular.to.pushNamed('/Sign-up');

@@ -58,7 +58,7 @@ Future<User?> registerUsingEmailPassword({
       print(e);
     }
 
-    // user!.sendEmailVerification();
+    await user?.sendEmailVerification();
     return user;
   }
 
