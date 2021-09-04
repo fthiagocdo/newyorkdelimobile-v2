@@ -26,78 +26,86 @@ class _LoginScreenState extends State<LoginScreen> {
       drawer: const Menu(),
       body: SafeArea(
         child: FutureBuilder(
-          future: initializeFirebase(),
+          future: initializeFirebaseLogin(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
-              return Container(
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(
-                      "assets/images/background.png",
+              if (snapshot.data != null) {
+                print("vai para tela de Menu");
+                // Modular.to.pushNamed('/Menu');
+                // return center so para evitar erro
+                return Center();
+              } else {
+                return Container(
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(
+                        "assets/images/background.png",
+                      ),
+                      fit: BoxFit.fill,
                     ),
-                    fit: BoxFit.fill,
                   ),
-                ),
-                child: ListView(
-                  children: [
-                    Column(
-                      children: [
-                        const SizedBox(
-                          height: 10.0,
-                        ),
-                        Container(
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                            color: Colors.white,
+                  child: ListView(
+                    children: [
+                      Column(
+                        children: [
+                          const SizedBox(
+                            height: 10.0,
                           ),
-                          padding: const EdgeInsets.all(10.0),
-                          margin: const EdgeInsets.all(15.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const SizedBox(
-                                height: 10.0,
-                              ),
-                              Row(
-                                children: [
-                                  const Text(
-                                    "Don't have an account? ",
-                                    style: TextStyle(
-                                        fontSize: 12.0,
-                                        color: Color(0xFF4f4d1f)),
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      Modular.to.pushNamed('/Sign-up');
-                                    },
-                                    child: const Text(
-                                      "Click Here ",
+                          Container(
+                            decoration: const BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                              color: Colors.white,
+                            ),
+                            padding: const EdgeInsets.all(10.0),
+                            margin: const EdgeInsets.all(15.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(
+                                  height: 10.0,
+                                ),
+                                Row(
+                                  children: [
+                                    const Text(
+                                      "Don't have an account? ",
                                       style: TextStyle(
-                                          fontWeight: FontWeight.w800,
                                           fontSize: 12.0,
                                           color: Color(0xFF4f4d1f)),
                                     ),
-                                  ),
-                                  const Text(
-                                    "to sign up.",
-                                    style: TextStyle(
-                                        fontSize: 12.0,
-                                        color: Color(0xFF4f4d1f)),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 10.0,
-                              ),
-                              const FormLogin(),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-              );
+                                    GestureDetector(
+                                      onTap: () {
+                                        Modular.to.pushNamed('/Sign-up');
+                                      },
+                                      child: const Text(
+                                        "Click Here ",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w800,
+                                            fontSize: 12.0,
+                                            color: Color(0xFF4f4d1f)),
+                                      ),
+                                    ),
+                                    const Text(
+                                      "to sign up.",
+                                      style: TextStyle(
+                                          fontSize: 12.0,
+                                          color: Color(0xFF4f4d1f)),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 10.0,
+                                ),
+                                const FormLogin(),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+              }
             } else {
               return const Center(
                 child: CircularProgressIndicator(),
