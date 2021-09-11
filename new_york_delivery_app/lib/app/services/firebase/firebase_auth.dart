@@ -28,7 +28,7 @@ Future<User?> signInUsingEmailPassword({
       print('Wrong password provided.');
     }
   }
-
+  
   return user;
 }
 
@@ -69,7 +69,9 @@ Future<User?> initializeFirebaseLogin() async {
   FirebaseApp firebaseApp = await Firebase.initializeApp();
   User? user = FirebaseAuth.instance.currentUser;
   if (user != null) {
+    
     return user;
+    
   }
   return null;
 }

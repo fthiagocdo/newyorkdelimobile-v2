@@ -7,6 +7,7 @@ import 'package:new_york_delivery_app/app/components/TextInput/text_input.dart';
 import 'package:new_york_delivery_app/app/repositories/API_client.repositories.dart';
 import 'package:new_york_delivery_app/app/services/firebase/firebase_auth.dart';
 import 'package:new_york_delivery_app/app/utlis/show_dialog.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FormLogin extends StatefulWidget {
   const FormLogin({Key? key}) : super(key: key);
@@ -27,6 +28,10 @@ class _FormState extends State<FormLogin> {
     ApiClientRepository _clientRepository = Modular.get<ApiClientRepository>();
 
     void _login() async {
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setBool('keepLogged', keepLogged);
+      
       User? user = await signInUsingEmailPassword(
         email: _emailController.text,
         password: _passwordController.text,
