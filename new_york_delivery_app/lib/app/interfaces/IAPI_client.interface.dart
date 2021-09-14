@@ -1,6 +1,14 @@
 abstract class IApiClient{
-  Future findOrCreateUser(String email, String provideID, String provide);
-  Future getUser(String email, String password);
-  Future updateUser(String name, String phoneNumber, String postcode, String address, String receiveNotifications, String provider);
+  // ignore: non_constant_identifier_names
+  Future findOrCreateUser(String email, String provide_id, String provider);
+  // ignore: non_constant_identifier_names
+  Future getUser(String provider, String provider_id);
+  Future updateUser(String userid,String name, String phoneNumber, String postcode, String address, String receiveNotifications, String provider);
+  Future getMenuTypes(String shopID);
+  Future getMenuItens(String menuTypeID);
+  Future getMenuExtras(String menuItemID);
+  Future getMenuChoices(String menuItemID);
+  Future listShops(String openedShops);
+  Future sendMessage(String name, String reply, String message);
   Future deleteUser();
 }

@@ -7,7 +7,7 @@ import 'package:new_york_delivery_app/app/components/MainButton/main_button.dart
 import 'package:new_york_delivery_app/app/components/TextInput/text_input.dart';
 import 'package:new_york_delivery_app/app/repositories/API_client.repositories.dart';
 import 'package:new_york_delivery_app/app/services/firebase/firebase_auth.dart';
-import 'package:new_york_delivery_app/app/utlis/show_dialog.dart';
+import 'package:new_york_delivery_app/app/utils/show_dialog.dart';
 
 class SignUpForm extends StatefulWidget {
   const SignUpForm({Key? key}) : super(key: key);
@@ -28,74 +28,85 @@ class _SignUpFormState extends State<SignUpForm> {
   bool confirmPassword = false;
 
   void _signup() async {
-    User? user = await registerUsingEmailPassword(
-      email: _emailController.text,
-      password: _passwordController.text,
-    );
+    User? user;
+    try {
+      user = await registerUsingEmailPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+    } catch (e) {
+      // ignore: avoid_print
+      print("Erro on firebase initialization, please try again later");
+      // ignore: avoid_print
+      print(e);
+    }
+    Response result;
     if (user != null) {
       try {
-        // Response result = await _clientRepository.findOrCreateUser(
-            // user.email.toString(), user.uid, user.providerData.toString());
+        result = await _clientRepository.findOrCreateUser(user.email.toString(),
+            user.uid.toString(), user.providerData.toString());
       } catch (e) {
+        // in case of the user is not on BD, delete it of the firebase.
         await user.delete();
-
-        return ShowDialog(
+        return showDialogAlert(
           title: "Message",
           message:
               "It was no possible complete your request. Please try again later...",
           context: context,
-          actions:[
+          actions: [
             Center(
-          child: MainButton(
-            text: "OK",
-            buttonColor: const Color(0xFF4f4d1f),
-            sizeWidth: 100.0,
-            onPress: () {
-              Navigator.popUntil(context, ModalRoute.withName('/Login'));
-            },
-          ),
-        ),
+              child: MainButton(
+                text: "OK",
+                buttonColor: const Color(0xFF4f4d1f),
+                sizeWidth: 100.0,
+                onPress: () {
+                  Navigator.popUntil(context, ModalRoute.withName('/Login'));
+                },
+              ),
+            ),
           ],
-         
         );
       }
-      return ShowDialog(
+
+      // ignore: avoid_print
+      print("User has logged successfully");
+      // ignore: avoid_print
+      print(result.data);
+      return showDialogAlert(
         title: "Message",
         message: 'Please validate your email address. Kindly check your inbox.',
         context: context,
-        actions:[
+        actions: [
           Center(
-          child: MainButton(
-            text: "OK",
-            buttonColor: const Color(0xFF4f4d1f),
-            sizeWidth: 100.0,
-            onPress: () {
-              Navigator.popUntil(context, ModalRoute.withName('/Login'));
-            },
+            child: MainButton(
+              text: "OK",
+              buttonColor: const Color(0xFF4f4d1f),
+              sizeWidth: 100.0,
+              onPress: () {
+                Navigator.popUntil(context, ModalRoute.withName('/Login'));
+              },
+            ),
           ),
-        ),
         ],
-        
       );
     } else {
-      return ShowDialog(
+      return showDialogAlert(
         title: "Message",
         message:
             "It was no possible complete your request. Please try again later...",
         context: context,
-        actions:[
+        actions: [
           Center(
-          child: MainButton(
-            text: "OK",
-            buttonColor: const Color(0xFF4f4d1f),
-            sizeWidth: 100.0,
-            onPress: () {
-              Navigator.pop(context);
-            },
+            child: MainButton(
+              text: "OK",
+              buttonColor: const Color(0xFF4f4d1f),
+              sizeWidth: 100.0,
+              onPress: () {
+                Navigator.pop(context);
+              },
+            ),
           ),
-        ),
         ],
-       
       );
     }
   }

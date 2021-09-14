@@ -4,7 +4,7 @@ import 'package:new_york_delivery_app/app/components/MainButton/main_button.dart
 import 'package:new_york_delivery_app/app/components/TextInput/text_input.dart';
 import 'package:new_york_delivery_app/app/repositories/API_client.repositories.dart';
 import 'package:new_york_delivery_app/app/services/firebase/firebase_auth.dart';
-import 'package:new_york_delivery_app/app/utlis/show_dialog.dart';
+import 'package:new_york_delivery_app/app/utils/show_dialog.dart';
 
 class ResetPasswordForm extends StatefulWidget {
   const ResetPasswordForm({Key? key}) : super(key: key);
@@ -16,13 +16,11 @@ class ResetPasswordForm extends StatefulWidget {
 class _ResetPasswordFormState extends State<ResetPasswordForm> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
-  final ApiClientRepository _clientRepository =
-      Modular.get<ApiClientRepository>();
   bool showPassword = false;
 
   void _resetPassword() async {
     await sendPasswordResetEmail(_emailController.text);
-    ShowDialog(
+    showDialogAlert(
       title: "message",
       message:
           'Please verify your mailbox to find an e-mail to help you to reset your password.',

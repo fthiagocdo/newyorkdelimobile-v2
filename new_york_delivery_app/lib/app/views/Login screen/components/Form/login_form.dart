@@ -6,7 +6,7 @@ import 'package:new_york_delivery_app/app/components/MainButton/main_button.dart
 import 'package:new_york_delivery_app/app/components/TextInput/text_input.dart';
 import 'package:new_york_delivery_app/app/repositories/API_client.repositories.dart';
 import 'package:new_york_delivery_app/app/services/firebase/firebase_auth.dart';
-import 'package:new_york_delivery_app/app/utlis/show_dialog.dart';
+import 'package:new_york_delivery_app/app/utils/show_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class FormLogin extends StatefulWidget {
@@ -39,7 +39,7 @@ class _FormState extends State<FormLogin> {
       );
       if (user != null) {
         if (!user.emailVerified) {
-          ShowDialog(
+          showDialogAlert(
             title: "Message",
             message: "Email not verified. Resend email verification?",
             context: context,
@@ -50,7 +50,7 @@ class _FormState extends State<FormLogin> {
                 sizeWidth: 50.0,
                 onPress: () async {
                   await user.sendEmailVerification();
-                  ShowDialog(
+                  showDialogAlert(
                     title: "Message",
                     message:
                         "Please validate your email address. Kindly check your inbox.",

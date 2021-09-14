@@ -1,8 +1,14 @@
+// ignore_for_file: avoid_print
+
+import 'dart:convert';
+import 'package:dio/dio.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:new_york_delivery_app/app/components/Menu/menu.dart';
+import 'package:new_york_delivery_app/app/repositories/API_client.repositories.dart';
 import 'package:new_york_delivery_app/app/views/Login%20screen/components/Form/login_form.dart';
 import 'package:new_york_delivery_app/app/services/firebase/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,6 +21,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  ApiClientRepository apiClientRepository = Modular.get<ApiClientRepository>();
+
   Widget getLoginScreen() {
     return Container(
       decoration: const BoxDecoration(
@@ -91,6 +99,59 @@ class _LoginScreenState extends State<LoginScreen> {
     return keep == null ? false : true;
   }
 
+  Future<Map> getLogin() async {
+    bool keepUserOn = false;
+    try {
+      keepUserOn = await getKeepLogged();
+    } catch (e) {
+      print("Error on SharedPreferences feature, please try later");
+      print(e);
+    }
+    print("passei 1");
+    // see if the keep-logged is set to true
+    if (keepUserOn == true) {
+      // if it's true, them check the firebase
+      User? user = await initializeFirebaseLogin();
+      if (user != null) {
+        // if the firebase has data, them check the api to get user's info
+        // ignore: prefer_typing_uninitialized_variables
+        print("asd");
+        print(user.email);
+        Response userInfo =
+            await apiClientRepository.getUser("email", user.uid.toString());
+
+        print("passei 2");
+        // ignore: unused_local_variable,
+        // print(userInfo.data);
+        // print(userInfo.data.runtimeType );
+        var userData = Map<String, dynamic>.from(userInfo.data);
+        
+        print(userData);
+
+        // print(jsonDecode(userInfo.data.toString()));
+        return userData;
+        // var userData = jsonDecode(userInfo.data);
+        // if (userData != null) {
+        //   print("AQUI");
+          // if there is some data in the api, send the user to menu screen
+        //   return userData;
+        // } else {
+        //   print("AQUI2");
+          // if there is any data, them send the user to the login screen
+        //   return {};
+        // }
+      } else {
+        // if there is no data on firebase, them send the user to the login screen
+        print("AQUI3");
+        return {"data":false};
+      }
+    } else {
+      print("AQUI4");
+      // if is not, them send the the user to the login screen
+      return {"data":false};
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -102,28 +163,20 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
       drawer: const Menu(),
       body: SafeArea(
-        child: FutureBuilder<bool>(
-          future: getKeepLogged(),
+        child: FutureBuilder<Map>(
+          future: getLogin(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
-              if (snapshot.hasData && snapshot.data != false) {
-                // check if there is data
-                return FutureBuilder(
-                    future: initializeFirebaseLogin(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.done) {
-                        print(snapshot.data);
-                        if (snapshot.hasData) {
-                          // go to the menu
-                          return const Center(child: Text("Go to Menu"),);
-                        } else {
-                          // go to login
-                          return getLoginScreen();
-                        }
-                      } else {
-                        return const Center(child: CircularProgressIndicator());
-                      }
-                    });
+              
+              print("Entrei");
+              print(snapshot.data);
+
+              if (snapshot.data?["data"] != false) {
+                // go to the menu screen with the data
+                
+                return const Center(
+                  child: Text("go to menu"),
+                );
               } else {
                 // login screen;
                 return getLoginScreen();

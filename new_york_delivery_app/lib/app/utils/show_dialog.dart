@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:new_york_delivery_app/app/components/MainButton/main_button.dart';
 
-Future<void> ShowDialog(
+Future<void> showDialogAlert(
     {required String title,
     required String message,
     required BuildContext context,

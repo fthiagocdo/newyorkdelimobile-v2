@@ -12,6 +12,7 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,7 +25,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       // drawer: const Menu(),
       body: SafeArea(
         child: FutureBuilder(
-          future: initializeFirebase(),
+          future: initializationFirebase(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               return Container(

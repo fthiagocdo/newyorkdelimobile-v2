@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:new_york_delivery_app/app/services/firebase/firebase_auth.dart';
-
 import 'components/Form/reset_password_form.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
@@ -12,6 +11,10 @@ class ResetPasswordScreen extends StatefulWidget {
 }
 
 class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
+
+
+  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,10 +24,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           style: TextStyle(fontFamily: "KGBrokenVesselsSketch"),
         ),
       ),
-      // drawer: const Menu(),
       body: SafeArea(
         child: FutureBuilder(
-          future: initializeFirebase(),
+          future: initializationFirebase(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               return Container(

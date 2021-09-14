@@ -4,11 +4,15 @@ import 'package:new_york_delivery_app/app/interfaces/IClientHttp.interface.dart'
 class HttpService implements IHttp {
   final Dio client = Dio();
   @override
-  Future delete(String url, Object data) async {
+  Future delete(String url, Object data, Map<String, dynamic> query) async {
     Response result;
 
     try {
-      result = await client.post(url, data: data);
+      result = await client.post(
+        url,
+        data: data,
+        queryParameters: query != {} ? query : <String, dynamic>{},
+      );
     } catch (e) {
       print(e.toString());
       return throw "Can make a DELETE request";
@@ -43,11 +47,15 @@ class HttpService implements IHttp {
   }
 
   @override
-  Future post(String url, Object data) async {
+  Future post(String url, Object data, Map<String, dynamic> query) async {
     Response result;
 
     try {
-      result = await client.post(url, data: data);
+      result = await client.post(
+        url,
+        data: data,
+        queryParameters: query != {} ? query : <String, dynamic>{},
+      );
     } catch (e) {
       print(e.toString());
       return throw "Can make a POST request";

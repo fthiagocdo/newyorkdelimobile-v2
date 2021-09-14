@@ -2,10 +2,23 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
+
+
+
 Future<FirebaseApp> initializeFirebase() async {
   FirebaseApp firebaseApp = await Firebase.initializeApp();
   return firebaseApp;
 }
+
+
+Future initializationFirebase() async{
+    try{
+      await initializeFirebase();
+    }catch(e){  
+      print("Error on firebase initialization, please try it later");
+      print(e);
+    }
+  }
 
 Future<User?> signInUsingEmailPassword({
   required String email,
@@ -69,9 +82,7 @@ Future<User?> initializeFirebaseLogin() async {
   FirebaseApp firebaseApp = await Firebase.initializeApp();
   User? user = FirebaseAuth.instance.currentUser;
   if (user != null) {
-    
     return user;
-    
   }
   return null;
 }
