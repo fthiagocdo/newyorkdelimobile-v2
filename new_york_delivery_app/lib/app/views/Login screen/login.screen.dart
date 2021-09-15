@@ -1,6 +1,5 @@
 // ignore_for_file: avoid_print
 
-import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -9,8 +8,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:new_york_delivery_app/app/components/Menu/menu.dart';
 import 'package:new_york_delivery_app/app/repositories/API_client.repositories.dart';
-import 'package:new_york_delivery_app/app/views/Login%20screen/components/Form/login_form.dart';
 import 'package:new_york_delivery_app/app/services/firebase/firebase_auth.dart';
+import 'package:new_york_delivery_app/app/views/Login%20screen/components/Form/login_form.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -113,6 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
       // if it's true, them check the firebase
       User? user = await initializeFirebaseLogin();
       if (user != null) {
+        
         // if the firebase has data, them check the api to get user's info
         // ignore: prefer_typing_uninitialized_variables
         print("asd");
@@ -125,7 +125,7 @@ class _LoginScreenState extends State<LoginScreen> {
         // print(userInfo.data);
         // print(userInfo.data.runtimeType );
         var userData = Map<String, dynamic>.from(userInfo.data);
-        
+
         print(userData);
 
         // print(jsonDecode(userInfo.data.toString()));
@@ -133,22 +133,22 @@ class _LoginScreenState extends State<LoginScreen> {
         // var userData = jsonDecode(userInfo.data);
         // if (userData != null) {
         //   print("AQUI");
-          // if there is some data in the api, send the user to menu screen
+        // if there is some data in the api, send the user to menu screen
         //   return userData;
         // } else {
         //   print("AQUI2");
-          // if there is any data, them send the user to the login screen
+        // if there is any data, them send the user to the login screen
         //   return {};
         // }
       } else {
         // if there is no data on firebase, them send the user to the login screen
         print("AQUI3");
-        return {"data":false};
+        return {"data": false};
       }
     } else {
       print("AQUI4");
       // if is not, them send the the user to the login screen
-      return {"data":false};
+      return {"data": false};
     }
   }
 
@@ -167,13 +167,12 @@ class _LoginScreenState extends State<LoginScreen> {
           future: getLogin(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
-              
               print("Entrei");
               print(snapshot.data);
 
-              if (snapshot.data?["data"] != false) {
+              if (snapshot.data?["data"] != null) {
                 // go to the menu screen with the data
-                
+
                 return const Center(
                   child: Text("go to menu"),
                 );

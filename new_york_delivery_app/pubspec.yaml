@@ -39,6 +39,8 @@ dependencies:
   dio: ^4.0.0
   flutter_modular: ^3.4.1+1
   shared_preferences: ^2.0.7
+  google_sign_in: ^5.1.0
+  flutter_facebook_auth: ^3.5.1
 
 dev_dependencies:
   flutter_test:
@@ -65,6 +67,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
+    - assets/images/icons/google_social.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

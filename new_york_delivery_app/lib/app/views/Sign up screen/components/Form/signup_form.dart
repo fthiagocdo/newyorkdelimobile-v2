@@ -56,6 +56,8 @@ class _SignUpFormState extends State<SignUpForm> {
           actions: [
             Center(
               child: MainButton(
+                brand: const Icon(Icons.add),
+                hasIcon: false,
                 text: "OK",
                 buttonColor: const Color(0xFF4f4d1f),
                 sizeWidth: 100.0,
@@ -79,6 +81,8 @@ class _SignUpFormState extends State<SignUpForm> {
         actions: [
           Center(
             child: MainButton(
+              brand: const Icon(Icons.add),
+              hasIcon: false,
               text: "OK",
               buttonColor: const Color(0xFF4f4d1f),
               sizeWidth: 100.0,
@@ -98,6 +102,8 @@ class _SignUpFormState extends State<SignUpForm> {
         actions: [
           Center(
             child: MainButton(
+              brand: const Icon(Icons.add),
+              hasIcon: false,
               text: "OK",
               buttonColor: const Color(0xFF4f4d1f),
               sizeWidth: 100.0,
@@ -216,6 +222,8 @@ class _SignUpFormState extends State<SignUpForm> {
           ),
           Center(
             child: MainButton(
+              brand: const Icon(Icons.add),
+              hasIcon: false,
               sizeWidth: 150,
               text: "CONFIRM",
               buttonColor: const Color(0xFF4f4d1f),
