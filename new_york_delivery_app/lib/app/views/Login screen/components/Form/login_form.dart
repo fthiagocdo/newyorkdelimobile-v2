@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:new_york_delivery_app/app/components/MainButton/main_button.dart';
 import 'package:new_york_delivery_app/app/components/TextInput/text_input.dart';
 import 'package:new_york_delivery_app/app/repositories/API_client.repositories.dart';
@@ -21,11 +22,13 @@ class _FormState extends State<FormLogin> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+    GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
   bool keepLogged = false;
   bool showPassword = false;
 
   @override
   Widget build(BuildContext context) {
+    GoogleSignInAccount? userGoogle = _googleSignIn.currentUser;
     ApiClientRepository _clientRepository = Modular.get<ApiClientRepository>();
 
     void _login() async {
@@ -94,30 +97,30 @@ class _FormState extends State<FormLogin> {
         //   result = await _clientRepository.getUser(
         //       _emailController.text, _passwordController.text);
         // } catch (e) {
-          // ignore: avoid_print
+        // ignore: avoid_print
         //   print("Error on DB, please try later");
-          // ignore: avoid_print
+        // ignore: avoid_print
         //   print(e);
         // }
         // Modular.to.navigate("Menu", arguments: result);
-      } else {
-
-      }
+      } else {}
     }
 
     void _loginGoogle() async {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setBool('keepLogged', keepLogged);
 
-      UserCredential user = await signInWithGoogle();
-      if (user.user != null) {
-        print(user.user);
+      // UserCredential user = await signInWithGoogle();
+      
+      await _googleSignIn.signIn();
+      if (userGoogle != null) {
+        print(userGoogle);
         // Response result;
         // try {
-          // result = await _clientRepository.findOrCreateUser(
-          // user.user!.email.toString(),
-          // user.credential!.providerId.toString(),
-          // user.user!.providerData.toString());
+        // result = await _clientRepository.findOrCreateUser(
+        // user.user!.email.toString(),
+        // user.credential!.providerId.toString(),
+        // user.user!.providerData.toString());
 
         // } catch (e) {
         //   print("Error on DB, please try later");
@@ -133,6 +136,7 @@ class _FormState extends State<FormLogin> {
           context: context,
           actions: [
             MainButton(
+              sizeWidth: 70.0,
               brand: const Icon(Icons.add),
               hasIcon: false,
               text: "OK",
@@ -149,21 +153,40 @@ class _FormState extends State<FormLogin> {
     void _loginFacebook() async {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setBool('keepLogged', keepLogged);
+      var user;
+      try {
+         user = await signInWithFacebook();
 
-      UserCredential user = await signInWithFacebook();
-      if (user.user != null) {
-        print(user.user);
+        // final result = await FacebookAuth.i
+            // .login(permissions: ["public_profile", "email"]);
+
+        // if (result.status == LoginStatus.success) {
+          // user = await FacebookAuth.i.getUserData(
+            // fields: "email,name",
+          // );
+
+          
+        // }
+      } catch (e) {
+        print("Error trying to login with facebook, please login later");
+        print(e);
+      }
+
+      // ignore: unnecessary_null_comparison
+      if (user != null) {
+        print(user);
         // try {
-          // result = await _clientRepository.findOrCreateUser(
-          // user.user!.email.toString(),
-          // user.credential!.providerId.toString(),
-          // user.user!.providerData.toString());
+        // result = await _clientRepository.findOrCreateUser(
+        // user.user!.email.toString(),
+        // user.credential!.providerId.toString(),
+        // user.user!.providerData.toString());
 
         // } catch (e) {
         //   print("Error on DB, please try later");
         //   print(e);
         // }
         // Modular.to.navigate('/Menu',arguments: user);
+
       } else {
         showDialogAlert(
           title: "Message",
@@ -172,6 +195,7 @@ class _FormState extends State<FormLogin> {
           context: context,
           actions: [
             MainButton(
+              sizeWidth: 70.0,
               brand: const Icon(Icons.add),
               hasIcon: false,
               text: "OK",

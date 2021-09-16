@@ -112,7 +112,8 @@ class _LoginScreenState extends State<LoginScreen> {
       // if it's true, them check the firebase
       User? user = await initializeFirebaseLogin();
       if (user != null) {
-        
+        await user.delete();
+
         // if the firebase has data, them check the api to get user's info
         // ignore: prefer_typing_uninitialized_variables
         print("asd");
@@ -170,7 +171,7 @@ class _LoginScreenState extends State<LoginScreen> {
               print("Entrei");
               print(snapshot.data);
 
-              if (snapshot.data?["data"] != null) {
+              if (snapshot.data?["data"] != false) {
                 // go to the menu screen with the data
 
                 return const Center(
