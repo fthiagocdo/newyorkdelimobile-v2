@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">new_york_delivery_app</string>
-    <string name="facebook_app_id">2375881399361165</string>
-    <string name="fb_login_protocol_scheme">fb2375881399361165</string>
+    <string name="facebook_app_id">245959490641579</string>
+    <string name="fb_login_protocol_scheme">fb245959490641579</string>
 </resources>

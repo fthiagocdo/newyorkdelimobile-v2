@@ -9,7 +9,7 @@ class TextInput extends StatelessWidget {
       required this.label,
       required this.showContent,
       required this.cursorColor,
-      required this.suffixIcon, required this.validation, required this.controller})
+      required this.suffixIcon, required this.validation, required this.controller,required this.isReadOnly})
       : super(key: key);
 
   final String? Function(String?) validation;
@@ -17,6 +17,7 @@ class TextInput extends StatelessWidget {
   final TextEditingController controller;
   final TextInputType keyboardType;
   final bool hasSuffixIcon;
+  final bool isReadOnly;
   final String label;
   final bool showContent;
   final Color cursorColor;
@@ -29,6 +30,7 @@ class TextInput extends StatelessWidget {
       controller: controller,
       validator: validation,
       // onChanged: onChange,
+      readOnly: isReadOnly,
       obscureText: !showContent,
       keyboardType: keyboardType,
       cursorColor: cursorColor,

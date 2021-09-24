@@ -128,6 +128,7 @@ class _SignUpFormState extends State<SignUpForm> {
             height: 10.0,
           ),
           TextInput(
+            isReadOnly: false,
             controller: _emailController,
             validation: (value) {
               if (value == null || value.isEmpty) {
@@ -149,6 +150,7 @@ class _SignUpFormState extends State<SignUpForm> {
             height: 10.0,
           ),
           TextInput(
+            isReadOnly: false,
             controller: _passwordController,
             validation: (value) {
               if (value == null || value.isEmpty) {
@@ -186,6 +188,7 @@ class _SignUpFormState extends State<SignUpForm> {
             height: 10.0,
           ),
           TextInput(
+            isReadOnly: false,
             controller: _confirmPasswordController,
             validation: (value) {
               if (value == null || value.isEmpty) {

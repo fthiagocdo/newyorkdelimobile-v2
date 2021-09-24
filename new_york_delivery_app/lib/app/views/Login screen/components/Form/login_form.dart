@@ -1,8 +1,7 @@
-import 'package:dio/dio.dart';
+// ignore_for_file: avoid_print
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:new_york_delivery_app/app/components/MainButton/main_button.dart';
 import 'package:new_york_delivery_app/app/components/TextInput/text_input.dart';
 import 'package:new_york_delivery_app/app/repositories/API_client.repositories.dart';
@@ -22,13 +21,11 @@ class _FormState extends State<FormLogin> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-    GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
   bool keepLogged = false;
   bool showPassword = false;
 
   @override
   Widget build(BuildContext context) {
-    GoogleSignInAccount? userGoogle = _googleSignIn.currentUser;
     ApiClientRepository _clientRepository = Modular.get<ApiClientRepository>();
 
     void _login() async {
@@ -109,23 +106,25 @@ class _FormState extends State<FormLogin> {
     void _loginGoogle() async {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setBool('keepLogged', keepLogged);
+      var user;
+      try {
+        user = await signInWithGoogle();
+      } catch (e) {
+        print(e);
+        print("Error trying to login with Google, please login later");
+      }
 
-      // UserCredential user = await signInWithGoogle();
-      
-      await _googleSignIn.signIn();
-      if (userGoogle != null) {
-        print(userGoogle);
-        // Response result;
-        // try {
-        // result = await _clientRepository.findOrCreateUser(
-        // user.user!.email.toString(),
-        // user.credential!.providerId.toString(),
-        // user.user!.providerData.toString());
-
-        // } catch (e) {
-        //   print("Error on DB, please try later");
-        //   print(e);
-        // }
+      if (user != null) {
+        var result;
+        try {
+          result = await _clientRepository.findOrCreateUser(
+              user.user!.email.toString(), user.user!.uid, "google");
+        var teste = await _clientRepository.updateUser('${result.data['details_customer']['customer']['id']}', user.additionalUserInfo.profile["name"], "", "", "", "1", "google");
+        } catch (e) {
+          print("Error on DB, please try later");
+          print(e);
+        }
+        // print("Google");
         // Modular.to.navigate('/Menu', arguments: user);
 
       } else {
@@ -153,20 +152,10 @@ class _FormState extends State<FormLogin> {
     void _loginFacebook() async {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setBool('keepLogged', keepLogged);
+      // ignore: prefer_typing_uninitialized_variables
       var user;
       try {
-         user = await signInWithFacebook();
-
-        // final result = await FacebookAuth.i
-            // .login(permissions: ["public_profile", "email"]);
-
-        // if (result.status == LoginStatus.success) {
-          // user = await FacebookAuth.i.getUserData(
-            // fields: "email,name",
-          // );
-
-          
-        // }
+        user = await signInWithFacebook();
       } catch (e) {
         print("Error trying to login with facebook, please login later");
         print(e);
@@ -174,17 +163,37 @@ class _FormState extends State<FormLogin> {
 
       // ignore: unnecessary_null_comparison
       if (user != null) {
-        print(user);
-        // try {
-        // result = await _clientRepository.findOrCreateUser(
-        // user.user!.email.toString(),
-        // user.credential!.providerId.toString(),
-        // user.user!.providerData.toString());
-
-        // } catch (e) {
-        //   print("Error on DB, please try later");
-        //   print(e);
-        // }
+        print("Facebook");
+        // print(user);
+        // print(user.additionalUserInfo);
+        // print(user.additionalUserInfo.profile);
+        // print(user.user.uid);
+        // print(user.user);
+        // print(user.user.phoneNumber);
+        // print(user.additionalUserInfo.profile["email"]);
+        // print(user.additionalUserInfo.profile["name"]);
+        // print(user.additionalUserInfo.profile["picture"]["data"]["url"]);
+        // print(user.credential);
+        // print(user.credential.signInMethod);
+        // print(user.additionalUserInfo.name);
+        
+        // ignore: prefer_typing_uninitialized_variables
+        var result;
+        var teste;
+        try {
+          result = await _clientRepository.findOrCreateUser(
+              user.additionalUserInfo.profile["email"],
+              user.user.uid,
+              user.credential.signInMethod);
+          // ! We must change the user data on the DB, using facebook's info
+           teste = await _clientRepository.updateUser('${result.data['details_customer']['customer']['id']}', user.additionalUserInfo.profile["name"], user.user.phoneNumber ?? "", "", "", "1", "facebook");
+        } catch (e) {
+          print("Error on DB, please try later");
+          print(e);
+        }
+        
+        print(result.data);
+        print(teste.data);
         // Modular.to.navigate('/Menu',arguments: user);
 
       } else {
@@ -241,6 +250,7 @@ class _FormState extends State<FormLogin> {
                 "E-mail",
               ),
               TextInput(
+                isReadOnly: false,
                 label: "",
                 hasSuffixIcon: false,
                 suffixIcon: GestureDetector(),
@@ -265,6 +275,7 @@ class _FormState extends State<FormLogin> {
                 "Password",
               ),
               TextInput(
+                isReadOnly: false,
                 validation: (value) {
                   if (value == null || value.isEmpty) {
                     return "Field 'password' must be filled.";
@@ -323,6 +334,7 @@ class _FormState extends State<FormLogin> {
               ),
               Center(
                 child: MainButton(
+                  sizeWidth: 330.0,
                   brand: const Icon(Icons.add),
                   hasIcon: false,
                   text: "LOG IN",
@@ -336,6 +348,12 @@ class _FormState extends State<FormLogin> {
               ),
             ],
           ),
+        ),
+        const SizedBox(
+          child: Divider(
+            color: Color(0xFF4f4d1f),
+          ),
+          // width: 250.0,
         ),
         SocialLogin(
           onPressGoogle: _loginGoogle,

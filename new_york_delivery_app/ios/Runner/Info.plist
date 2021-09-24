@@ -4,6 +4,12 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+<string>This app requires read and write permission Photo Library</string>
+<key>NSCameraUsageDescription</key>
+<string>This app requires read and write permission from the user.</string>
+<key>NSMicrophoneUsageDescription</key>
+<string>This app requires get access to micro phone</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -27,7 +33,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>fb2375881399361165</string>
+				<string>fb245959490641579</string>
 				<string>com.googleusercontent.apps.625405167152-s6evnn1ql5eqbrn29kusl8ajji1vht96</string>
 			</array>
 		</dict>
@@ -35,7 +41,7 @@
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>FacebookAppID</key>
-	<string>2375881399361165</string>
+	<string>245959490641579</string>
 	<key>FacebookDisplayName</key>
 	<string>new-york-deli</string>
 	<key>LSApplicationQueriesSchemes</key>

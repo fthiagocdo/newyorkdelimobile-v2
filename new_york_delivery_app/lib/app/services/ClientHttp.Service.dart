@@ -67,4 +67,25 @@ class HttpService implements IHttp {
       return throw "StatusCode different than 200";
     }
   }
+
+  @override
+  Future put(String url, Object data, Map<String, dynamic> query) async {
+    Response result;
+    try {
+      result = await client.post(
+        url,
+        data: data,
+        queryParameters: query != {} ? query : <String, dynamic>{},
+      );
+    } catch (e) {
+      print(e.toString());
+      return throw "Can make a PUT request";
+    }
+
+    if (result.statusCode == 200) {
+      return result;
+    } else {
+      return throw "StatusCode different than 200";
+    }
+  }
 }

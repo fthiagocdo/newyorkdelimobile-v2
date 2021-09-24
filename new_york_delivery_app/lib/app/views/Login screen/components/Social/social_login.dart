@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:new_york_delivery_app/app/components/MainButton/main_button.dart';
+import 'package:new_york_delivery_app/app/views/Login%20screen/components/SocialButton/social_button.dart';
 
 class SocialLogin extends StatelessWidget {
   const SocialLogin({Key? key, required this.onPressGoogle, required this.onPressFacebook}) : super(key: key);
@@ -8,28 +9,31 @@ class SocialLogin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        MainButton(
+        SocialButton(
+          side:"Left",
+          
           hasIcon: true,
           brand: const Image(
-              height: 20.0,
+              height: 30.0,
               image: AssetImage('assets/images/icons/google_social.png')),
-          text: "",
+          text: "Google",
           onPress: onPressGoogle,
-          buttonColor: Colors.white,
+          buttonColor: const Color.fromRGBO(221,76,57, 1),
           sizeWidth: 90.0,
         ),
-        MainButton(
+        SocialButton(
+          side:"Right",
           hasIcon: true,
           brand: const Icon(
             Icons.facebook,
-            size: 30.0,
+            size: 25.0,
           ),
-          text: "",
+          text: "Facebook",
           onPress: onPressFacebook,
           buttonColor: Colors.blueAccent,
-          sizeWidth: 90.0,
+          sizeWidth: 110.0,
         )
       ],
     );

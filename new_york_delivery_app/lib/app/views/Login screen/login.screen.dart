@@ -9,6 +9,7 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:new_york_delivery_app/app/components/Menu/menu.dart';
 import 'package:new_york_delivery_app/app/repositories/API_client.repositories.dart';
 import 'package:new_york_delivery_app/app/services/firebase/firebase_auth.dart';
+import 'package:new_york_delivery_app/app/utils/get_keep_logged.dart';
 import 'package:new_york_delivery_app/app/views/Login%20screen/components/Form/login_form.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -21,6 +22,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   ApiClientRepository apiClientRepository = Modular.get<ApiClientRepository>();
+  late bool keepLogged;
 
   Widget getLoginScreen() {
     return Container(
@@ -81,7 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(
                       height: 10.0,
                     ),
-                    const FormLogin(),
+                     const FormLogin(),
                   ],
                 ),
               )
@@ -92,65 +94,48 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Future<bool> getKeepLogged() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool? keep = prefs.getBool('keepLogged');
-    return keep == null ? false : true;
-  }
+  
 
   Future<Map> getLogin() async {
-    bool keepUserOn = false;
     try {
-      keepUserOn = await getKeepLogged();
+       keepLogged = await getKeepLogged();
     } catch (e) {
       print("Error on SharedPreferences feature, please try later");
       print(e);
     }
     print("passei 1");
     // see if the keep-logged is set to true
-    if (keepUserOn == true) {
+    print('keepLogged: $keepLogged');
+    if (keepLogged == true) {
       // if it's true, them check the firebase
       User? user = await initializeFirebaseLogin();
+      await user?.reload(); 
       if (user != null) {
-        await user.delete();
 
         // if the firebase has data, them check the api to get user's info
         // ignore: prefer_typing_uninitialized_variables
-        print("asd");
-        print(user.email);
         Response userInfo =
-            await apiClientRepository.getUser("email", user.uid.toString());
+            await apiClientRepository.getUser(user.providerData[0].providerId, user.uid.toString());
 
         print("passei 2");
         // ignore: unused_local_variable,
-        // print(userInfo.data);
-        // print(userInfo.data.runtimeType );
         var userData = Map<String, dynamic>.from(userInfo.data);
 
-        print(userData);
-
-        // print(jsonDecode(userInfo.data.toString()));
+        // print(userData);
         return userData;
-        // var userData = jsonDecode(userInfo.data);
-        // if (userData != null) {
-        //   print("AQUI");
-        // if there is some data in the api, send the user to menu screen
-        //   return userData;
-        // } else {
-        //   print("AQUI2");
-        // if there is any data, them send the user to the login screen
-        //   return {};
-        // }
+       
       } else {
         // if there is no data on firebase, them send the user to the login screen
         print("AQUI3");
         return {"data": false};
       }
     } else {
+      
       print("AQUI4");
       // if is not, them send the the user to the login screen
       return {"data": false};
     }
+     
   }
 
   @override

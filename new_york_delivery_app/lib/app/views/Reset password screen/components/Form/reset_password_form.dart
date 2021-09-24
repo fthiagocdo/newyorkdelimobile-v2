@@ -53,6 +53,7 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
             height: 10.0,
           ),
           TextInput(
+            isReadOnly: false,
             controller: _emailController,
             validation: (value) {
               if (value == null || value.isEmpty) {
