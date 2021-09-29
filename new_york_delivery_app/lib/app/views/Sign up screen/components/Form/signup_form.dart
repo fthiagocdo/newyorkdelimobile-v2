@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -26,8 +27,12 @@ class _SignUpFormState extends State<SignUpForm> {
       Modular.get<ApiClientRepository>();
   bool showPassword = false;
   bool confirmPassword = false;
+  bool showScreen = true;
 
   void _signup() async {
+    setState(() {
+      showScreen = false;
+    });
     User? user;
     try {
       user = await registerUsingEmailPassword(
@@ -39,6 +44,29 @@ class _SignUpFormState extends State<SignUpForm> {
       print("Erro on firebase initialization, please try again later");
       // ignore: avoid_print
       print(e);
+      setState(() {
+        showScreen = true;
+      });
+      return showDialogAlert(
+          title: "Message",
+          message:
+              "It was no possible complete your request. Please try again later...",
+          context: context,
+          actions: [
+            Center(
+              child: MainButton(
+                brand: const Icon(Icons.add),
+                hasIcon: false,
+                text: "OK",
+                buttonColor: const Color(0xFF4f4d1f),
+                sizeWidth: 100.0,
+                onPress: () {
+                  Navigator.popUntil(context, ModalRoute.withName('/Login'));
+                },
+              ),
+            ),
+          ],
+        );
     }
     Response result;
     if (user != null) {
@@ -48,6 +76,9 @@ class _SignUpFormState extends State<SignUpForm> {
       } catch (e) {
         // in case of the user is not on BD, delete it of the firebase.
         await user.delete();
+        setState(() {
+          showScreen = true;
+        });
         return showDialogAlert(
           title: "Message",
           message:
@@ -74,6 +105,9 @@ class _SignUpFormState extends State<SignUpForm> {
       print("User has logged successfully");
       // ignore: avoid_print
       print(result.data);
+      setState(() {
+        showScreen = true;
+      });
       return showDialogAlert(
         title: "Message",
         message: 'Please validate your email address. Kindly check your inbox.',
@@ -94,10 +128,15 @@ class _SignUpFormState extends State<SignUpForm> {
         ],
       );
     } else {
+      setState(() {
+        showScreen = true;
+      });
+      print("teste");
+      print(user);
       return showDialogAlert(
         title: "Message",
         message:
-            "It was no possible complete your request. Please try again later...",
+            "An account already exists for that email, please try to login",
         context: context,
         actions: [
           Center(
@@ -119,126 +158,155 @@ class _SignUpFormState extends State<SignUpForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(
-            height: 10.0,
-          ),
-          TextInput(
-            isReadOnly: false,
-            controller: _emailController,
-            validation: (value) {
-              if (value == null || value.isEmpty) {
-                return "Field 'email' must be filled.";
-              }
-              if (!value.contains('@') && value != "") {
-                return "Field 'Email' invalid.";
-              }
-              return null;
-            },
-            label: "E-mail",
-            keyboardType: TextInputType.emailAddress,
-            hasSuffixIcon: false,
-            suffixIcon: GestureDetector(),
-            cursorColor: const Color(0xFF4f4d1f),
-            showContent: true,
-          ),
-          const SizedBox(
-            height: 10.0,
-          ),
-          TextInput(
-            isReadOnly: false,
-            controller: _passwordController,
-            validation: (value) {
-              if (value == null || value.isEmpty) {
-                return "Field 'password' must be filled.";
-              }
-              if (value.length < 8) {
-                return "Password must be at least 8 characters long.";
-              }
-              if (value.length > 32) {
-                return "Password must be a maximum of 32 characters.";
-              }
-              return null;
-            },
-            label: "Password",
-            keyboardType: TextInputType.visiblePassword,
-            hasSuffixIcon: true,
-            suffixIcon: GestureDetector(
-              onTap: () {
-                setState(() {
-                  showPassword = !showPassword;
-                });
-              },
-              child: showPassword
-                  ? const Icon(Icons.lock, size: 25.0, color: Color(0xFF4f4d1f))
-                  : const Icon(
-                      Icons.lock_open,
-                      size: 25.0,
-                      color: Color(0xFF4f4d1f),
-                    ),
-            ),
-            cursorColor: const Color(0xFF4f4d1f),
-            showContent: showPassword,
-          ),
-          const SizedBox(
-            height: 10.0,
-          ),
-          TextInput(
-            isReadOnly: false,
-            controller: _confirmPasswordController,
-            validation: (value) {
-              if (value == null || value.isEmpty) {
-                return "Field 'confirmPassword' must be filled.";
-              }
-              if (value != _passwordController.text) {
-                return "Password and Confirm Password do not match.";
-              }
+    return Stack(
+      children: [
+        Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(
+                height: 10.0,
+              ),
+              TextInput(
+                minLines: 1,
+                maxLines: 1,
+                isReadOnly: false,
+                controller: _emailController,
+                validation: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Field 'email' must be filled.";
+                  }
+                  if (!value.contains('@') && value != "") {
+                    return "Field 'Email' invalid.";
+                  }
+                  return null;
+                },
+                label: "E-mail",
+                keyboardType: TextInputType.emailAddress,
+                hasSuffixIcon: false,
+                suffixIcon: GestureDetector(),
+                cursorColor: const Color(0xFF4f4d1f),
+                showContent: true,
+              ),
+              const SizedBox(
+                height: 10.0,
+              ),
+              TextInput(
+                minLines: 1,
+                maxLines: 1,
+                isReadOnly: false,
+                controller: _passwordController,
+                validation: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Field 'password' must be filled.";
+                  }
+                  if (value.length < 8) {
+                    return "Password must be at least 8 characters long.";
+                  }
+                  if (value.length > 32) {
+                    return "Password must be a maximum of 32 characters.";
+                  }
+                  return null;
+                },
+                label: "Password",
+                keyboardType: TextInputType.visiblePassword,
+                hasSuffixIcon: true,
+                suffixIcon: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      showPassword = !showPassword;
+                    });
+                  },
+                  child: showPassword
+                      ? const Icon(Icons.lock,
+                          size: 25.0, color: Color(0xFF4f4d1f))
+                      : const Icon(
+                          Icons.lock_open,
+                          size: 25.0,
+                          color: Color(0xFF4f4d1f),
+                        ),
+                ),
+                cursorColor: const Color(0xFF4f4d1f),
+                showContent: showPassword,
+              ),
+              const SizedBox(
+                height: 10.0,
+              ),
+              TextInput(
+                minLines: 1,
+                maxLines: 1,
+                isReadOnly: false,
+                controller: _confirmPasswordController,
+                validation: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Field 'confirmPassword' must be filled.";
+                  }
+                  if (value != _passwordController.text) {
+                    return "Password and Confirm Password do not match.";
+                  }
 
-              return null;
-            },
-            label: "Confirm Password",
-            keyboardType: TextInputType.visiblePassword,
-            hasSuffixIcon: true,
-            suffixIcon: GestureDetector(
-              onTap: () {
-                setState(() {
-                  confirmPassword = !confirmPassword;
-                });
-              },
-              child: confirmPassword
-                  ? const Icon(Icons.lock, size: 25.0, color: Color(0xFF4f4d1f))
-                  : const Icon(
-                      Icons.lock_open,
-                      size: 25.0,
-                      color: Color(0xFF4f4d1f),
-                    ),
-            ),
-            cursorColor: const Color(0xFF4f4d1f),
-            showContent: confirmPassword,
+                  return null;
+                },
+                label: "Confirm Password",
+                keyboardType: TextInputType.visiblePassword,
+                hasSuffixIcon: true,
+                suffixIcon: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      confirmPassword = !confirmPassword;
+                    });
+                  },
+                  child: confirmPassword
+                      ? const Icon(Icons.lock,
+                          size: 25.0, color: Color(0xFF4f4d1f))
+                      : const Icon(
+                          Icons.lock_open,
+                          size: 25.0,
+                          color: Color(0xFF4f4d1f),
+                        ),
+                ),
+                cursorColor: const Color(0xFF4f4d1f),
+                showContent: confirmPassword,
+              ),
+              const SizedBox(
+                height: 10.0,
+              ),
+              Center(
+                child: MainButton(
+                  brand: const Icon(Icons.add),
+                  hasIcon: false,
+                  sizeWidth: 150,
+                  text: "CONFIRM",
+                  buttonColor: const Color(0xFF4f4d1f),
+                  onPress: () async {
+                    if (_formKey.currentState!.validate()) {
+                      _signup();
+                    }
+                  },
+                ),
+              ),
+            ],
           ),
-          const SizedBox(
-            height: 10.0,
-          ),
-          Center(
-            child: MainButton(
-              brand: const Icon(Icons.add),
-              hasIcon: false,
-              sizeWidth: 150,
-              text: "CONFIRM",
-              buttonColor: const Color(0xFF4f4d1f),
-              onPress: () async {
-                if (_formKey.currentState!.validate()) {
-                  _signup();
-                }
-              },
+        ),
+        if (!showScreen)
+          Positioned.fill(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 7, sigmaY: 7),
+              child: Center(
+                child: Container(
+                  width: 90.0,
+                  height: 90.0,
+                  padding: const EdgeInsets.all(5),
+                  child: const CircularProgressIndicator(
+                    strokeWidth: 5.0,
+                    color: Color(0xFF4f4d1f),
+                  ),
+                ),
+              ),
             ),
           )
-        ],
-      ),
+      ],
     );
   }
 }

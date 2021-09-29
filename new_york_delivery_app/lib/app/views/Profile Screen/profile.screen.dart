@@ -8,16 +8,16 @@ import 'package:new_york_delivery_app/app/components/Menu/menu.dart';
 import 'package:new_york_delivery_app/app/repositories/API_client.repositories.dart';
 import 'package:new_york_delivery_app/app/services/firebase/firebase_auth.dart';
 import 'package:new_york_delivery_app/app/utils/show_dialog.dart';
-import 'package:new_york_delivery_app/app/views/Profile/components/ProfileForm/profile_form.dart';
+import 'package:new_york_delivery_app/app/views/Profile%20Screen/components/ProfileForm/profile_form.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
 
   @override
-  propose createState() => propose();
+  ProfileScreenState createState() => ProfileScreenState();
 }
 
-class propose extends State<ProfileScreen> {
+class ProfileScreenState extends State<ProfileScreen> {
   ApiClientRepository apiClientRepository = Modular.get<ApiClientRepository>();
   // ! This is just for propose of testing
   // Map<String,String> data = {
@@ -115,6 +115,8 @@ class propose extends State<ProfileScreen> {
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done &&
                 snapshot.data == true) {
+                  print("teste");
+                  print(snapshot.data);
               return Container(
                 decoration: const BoxDecoration(
                   image: DecorationImage(

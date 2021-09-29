@@ -18,11 +18,12 @@ Future initializationFirebase() async {
   }
 }
 
-Future<User?> signInUsingEmailPassword({
+Future signInUsingEmailPassword({
   required String email,
   required String password,
   required BuildContext context,
 }) async {
+  await initializeFirebase();
   FirebaseAuth auth = FirebaseAuth.instance;
   User? user;
 
@@ -35,12 +36,14 @@ Future<User?> signInUsingEmailPassword({
   } on FirebaseAuthException catch (e) {
     if (e.code == 'user-not-found') {
       print('No user found for that email.');
+      return ['No user found for that email.', true];
     } else if (e.code == 'wrong-password') {
       print('Wrong password provided.');
+      return ['Wrong password provided.', true];
     }
   }
 
-  return user;
+  return [user, false];
 }
 
 Future<User?> registerUsingEmailPassword({
@@ -62,6 +65,7 @@ Future<User?> registerUsingEmailPassword({
       print('The password provided is too weak.');
     } else if (e.code == 'email-already-in-use') {
       print('The account already exists for that email.');
+      return null;
     }
   } catch (e) {
     print(e);
@@ -140,7 +144,7 @@ Future<UserCredential> signInWithFacebook() async {
 }
 
 
-void signOut() async {
+Future<void> signOut() async {
   FirebaseApp firebaseApp = await Firebase.initializeApp();
   User? user = FirebaseAuth.instance.currentUser;
   if (user != null) {

@@ -9,7 +9,7 @@ class TextInput extends StatelessWidget {
       required this.label,
       required this.showContent,
       required this.cursorColor,
-      required this.suffixIcon, required this.validation, required this.controller,required this.isReadOnly})
+      required this.suffixIcon, required this.validation, required this.controller,required this.isReadOnly, required this.minLines, required this.maxLines})
       : super(key: key);
 
   final String? Function(String?) validation;
@@ -22,10 +22,15 @@ class TextInput extends StatelessWidget {
   final bool showContent;
   final Color cursorColor;
   final GestureDetector suffixIcon;
+  final int minLines;
+  final int maxLines;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      textInputAction: TextInputAction.newline,
+      minLines: minLines,
+      maxLines: maxLines,
       style: const TextStyle(color: Color(0xFF4f4d1f),),
       controller: controller,
       validator: validation,

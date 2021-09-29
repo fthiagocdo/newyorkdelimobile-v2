@@ -12,7 +12,6 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +21,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           style: TextStyle(fontFamily: "KGBrokenVesselsSketch"),
         ),
       ),
-      // drawer: const Menu(),
+      drawer: const Menu(),
       body: SafeArea(
         child: FutureBuilder(
           future: initializationFirebase(),
@@ -52,7 +51,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           padding: const EdgeInsets.all(15.0),
                           margin: const EdgeInsets.all(15.0),
                           child: Column(
-                            children: const [
+                            children: const  [
                               SizedBox(
                                 height: 10.0,
                               ),

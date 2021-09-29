@@ -17,23 +17,29 @@ class _MenuState extends State<Menu> {
     if (getUser == true) {
       User? user = await initializeFirebaseLogin();
       if (user != null) {
-        return {"name": user.displayName, "photoURL": user.photoURL};
+        return {
+          "name": user.displayName.toString() != "null"
+              ? user.displayName.toString()
+              : "User",
+          "email": user.email ?? "",
+          "photoURL": user.photoURL ?? ""
+        };
       }
-      return {"data":false};
+      return {"data": false};
     } else {
-      return {"data":false};
+      return {"data": false};
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Map>(
+    return FutureBuilder<Map<dynamic, dynamic>>(
       future: getMenu(),
       builder: (context, snapshot) {
-        print(snapshot.data!["data"] == false);
+        // print(snapshot.data!["data"]);
         if (snapshot.connectionState == ConnectionState.done &&
             snapshot.data!["data"] == false) {
-              print("AQUI1");
+            
           return Drawer(
             child: ListView(
               padding: EdgeInsets.zero,
@@ -86,25 +92,29 @@ class _MenuState extends State<Menu> {
                   leading: const Icon(Icons.email, color: Color(0xFF4f4d1f)),
                   title: const Text('Contact Us',
                       style: TextStyle(color: Color(0xFF4f4d1f))),
-                  onTap: () {},
+                  onTap: () {
+                    Modular.to.pushNamed("/Contact-me");
+                  },
                 ),
                 ListTile(
                   leading: const Icon(Icons.login, color: Color(0xFF4f4d1f)),
                   title: const Text('Login',
                       style: TextStyle(color: Color(0xFF4f4d1f))),
-                  onTap: () {},
+                  onTap: () {
+                    Modular.to.pushNamed("/Login");
+                  },
                 ),
               ],
             ),
           );
         } else {
-          print("AQUI2");
+          // ignore: prefer_typing_uninitialized_variables
           return Drawer(
             child: ListView(
               padding: EdgeInsets.zero,
               children: [
                 SizedBox(
-                  height: 220.0,
+                  height: 235.0,
                   child: DrawerHeader(
                     decoration: const BoxDecoration(
                       gradient: LinearGradient(colors: [
@@ -117,21 +127,48 @@ class _MenuState extends State<Menu> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       // crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        CircleAvatar(
-                          radius: 55.0,
-                          foregroundImage:
-                              NetworkImage(snapshot.data!["photoURL"]),
-                        ),
+                        if ( snapshot.data?["photoURL"] != null && snapshot.data?["photoURL"] != "" ) CircleAvatar(
+                                radius: 55.0,
+                                foregroundImage:
+                                    NetworkImage(snapshot.data?["photoURL"] ?? ""),
+                              ) else const CircleAvatar(
+                                radius: 55.0,
+                                foregroundImage:
+                                    AssetImage("assets/images/user.png"),
+                              ),
                         const SizedBox(
                           height: 20.0,
                         ),
-                        Text(
-                          snapshot.data!["displayName"] ?? "User",
-                          style: const TextStyle(
-                              fontSize: 20.0,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w800),
-                        ),
+                        snapshot.data?["name"] == ""
+                            ? Text(
+                                snapshot.data!["email"],
+                                style: const TextStyle(
+                                    fontSize: 20.0,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w800),
+                              )
+                            : Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    snapshot.data?["name"] ?? "",
+                                    style: const TextStyle(
+                                        fontSize: 20.0,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w800),
+                                  ),
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  Text(
+                                    snapshot.data?["email"] ?? "",
+                                    style: const TextStyle(
+                                        fontSize: 15.0,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w700),
+                                  )
+                                ],
+                              )
                       ],
                     ),
                   ),
@@ -159,7 +196,9 @@ class _MenuState extends State<Menu> {
                   leading: const Icon(Icons.email, color: Color(0xFF4f4d1f)),
                   title: const Text('Contact Us',
                       style: TextStyle(color: Color(0xFF4f4d1f))),
-                  onTap: () {},
+                  onTap: () {
+                    Modular.to.pushNamed("/Contact-me");
+                  },
                 ),
                 ListTile(
                   leading: const Icon(Icons.list_alt_outlined,
@@ -179,10 +218,12 @@ class _MenuState extends State<Menu> {
                   leading: const Icon(Icons.logout, color: Color(0xFF4f4d1f)),
                   title: const Text('Log out',
                       style: TextStyle(color: Color(0xFF4f4d1f))),
-                  onTap: () {
-                    signOut();
+                  onTap: () async {
+                    await signOut();
                     setState(() {});
-                    Modular.to.popUntil(ModalRoute.withName('/Login'));
+                    // Modular.to.navigate("/Login");
+                    Navigator.pushNamedAndRemoveUntil(context, '/Login', ModalRoute.withName('/Login'));
+
                   },
                 ),
               ],

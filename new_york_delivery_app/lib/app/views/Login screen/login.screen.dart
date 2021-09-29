@@ -11,7 +11,6 @@ import 'package:new_york_delivery_app/app/repositories/API_client.repositories.d
 import 'package:new_york_delivery_app/app/services/firebase/firebase_auth.dart';
 import 'package:new_york_delivery_app/app/utils/get_keep_logged.dart';
 import 'package:new_york_delivery_app/app/views/Login%20screen/components/Form/login_form.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -83,7 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(
                       height: 10.0,
                     ),
-                     const FormLogin(),
+                    const FormLogin(),
                   ],
                 ),
               )
@@ -109,6 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (keepLogged == true) {
       // if it's true, them check the firebase
       User? user = await initializeFirebaseLogin();
+      // await user?.delete();
       await user?.reload(); 
       if (user != null) {
 
@@ -121,7 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
         // ignore: unused_local_variable,
         var userData = Map<String, dynamic>.from(userInfo.data);
 
-        // print(userData);
+        print(userData);
         return userData;
        
       } else {
@@ -155,8 +155,9 @@ class _LoginScreenState extends State<LoginScreen> {
             if (snapshot.connectionState == ConnectionState.done) {
               print("Entrei");
               print(snapshot.data);
-
-              if (snapshot.data?["data"] != false) {
+              
+              if (snapshot.data?["data"] != false ) {
+                // if(false){
                 // go to the menu screen with the data
 
                 return const Center(

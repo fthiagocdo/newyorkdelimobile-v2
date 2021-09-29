@@ -21,7 +21,7 @@ class SocialLogin extends StatelessWidget {
           text: "Google",
           onPress: onPressGoogle,
           buttonColor: const Color.fromRGBO(221,76,57, 1),
-          sizeWidth: 90.0,
+          sizeWidth: 100.0,
         ),
         SocialButton(
           side:"Right",
@@ -33,7 +33,7 @@ class SocialLogin extends StatelessWidget {
           text: "Facebook",
           onPress: onPressFacebook,
           buttonColor: Colors.blueAccent,
-          sizeWidth: 110.0,
+          sizeWidth: 100.0,
         )
       ],
     );
