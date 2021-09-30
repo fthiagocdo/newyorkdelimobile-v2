@@ -72,7 +72,7 @@ class ApiClientRepository implements IApiClient {
   }
 
   @override
-  Future listShops(String openedShops) async {
+  Future listShops(bool openedShops) async {
     Response result = await client.get(mainURL + 'shop/all/$openedShops', {});
     return result;
   }

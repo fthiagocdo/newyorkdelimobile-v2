@@ -178,7 +178,7 @@ class _FormState extends State<FormLogin> {
       setState(() {
         showScreen = true;
       });
-      // Modular.to.navigate("Menu", arguments: result);
+      Modular.to.navigate("Choose-Deli");
     }
 
     void _loginGoogle() async {
@@ -240,8 +240,7 @@ class _FormState extends State<FormLogin> {
           showScreen = true;
         });
         // print("Google");
-        // Modular.to.navigate('/Menu', arguments: user);
-
+        Modular.to.navigate("Choose-Deli");
       } else {
         setState(() {
           showScreen = true;
@@ -353,8 +352,7 @@ class _FormState extends State<FormLogin> {
         });
         print(result.data);
         print(teste.data);
-        // Modular.to.navigate('/Menu',arguments: user);
-
+        Modular.to.navigate("Choose-Deli");
       } else {
         setState(() {
           showScreen = true;

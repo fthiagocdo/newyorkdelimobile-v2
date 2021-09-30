@@ -1,6 +1,8 @@
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:new_york_delivery_app/app/repositories/API_client.repositories.dart';
 import 'package:new_york_delivery_app/app/services/ClientHttp.Service.dart';
+import 'package:new_york_delivery_app/app/views/Choose%20A%20Deli%20Screen/choose_a_Deli.screen.dart';
+
 import 'package:new_york_delivery_app/app/views/Contact%20Me%20Screen/contact_me.screen.dart';
 import 'package:new_york_delivery_app/app/views/Login%20screen/login.screen.dart';
 import 'package:new_york_delivery_app/app/views/Profile%20Screen/profile.screen.dart';
@@ -23,5 +25,6 @@ class AppModule extends Module {
     ChildRoute('/Reset-password', child: (_,args) => const ResetPasswordScreen()),
     ChildRoute('/Contact-me', child: (_,args) => const ContactMeScreen()),
     ChildRoute('/Profile', child: (_,args) => const ProfileScreen()),
+    ChildRoute('/Choose-Deli', child: (_,args) => const ChooseADeliScreen()),
   ];
 }

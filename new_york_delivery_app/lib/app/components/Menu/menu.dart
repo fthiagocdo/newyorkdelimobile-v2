@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:new_york_delivery_app/app/services/firebase/firebase_auth.dart';
-import 'package:new_york_delivery_app/app/utils/get_keep_logged.dart';
 
 class Menu extends StatefulWidget {
   const Menu({Key? key}) : super(key: key);
@@ -13,22 +12,17 @@ class Menu extends StatefulWidget {
 
 class _MenuState extends State<Menu> {
   Future<Map> getMenu() async {
-    bool getUser = await getKeepLogged();
-    if (getUser == true) {
-      User? user = await initializeFirebaseLogin();
-      if (user != null) {
-        return {
-          "name": user.displayName.toString() != "null"
-              ? user.displayName.toString()
-              : "User",
-          "email": user.email ?? "",
-          "photoURL": user.photoURL ?? ""
-        };
-      }
-      return {"data": false};
-    } else {
-      return {"data": false};
+    User? user = await initializeFirebaseLogin();
+    if (user != null) {
+      return {
+        "name": user.displayName.toString() != "null"
+            ? user.displayName.toString()
+            : "User",
+        "email": user.email ?? "",
+        "photoURL": user.photoURL ?? ""
+      };
     }
+    return {"data": false};
   }
 
   @override
@@ -39,7 +33,6 @@ class _MenuState extends State<Menu> {
         // print(snapshot.data!["data"]);
         if (snapshot.connectionState == ConnectionState.done &&
             snapshot.data!["data"] == false) {
-            
           return Drawer(
             child: ListView(
               padding: EdgeInsets.zero,
@@ -80,13 +73,17 @@ class _MenuState extends State<Menu> {
                     'Menu',
                     style: TextStyle(color: Color(0xFF4f4d1f)),
                   ),
-                  onTap: () {},
+                  onTap: () {
+                    
+                  },
                 ),
                 ListTile(
                   leading: const Icon(Icons.home, color: Color(0xFF4f4d1f)),
-                  title: const Text('Home',
+                  title: const Text('Change Deli',
                       style: TextStyle(color: Color(0xFF4f4d1f))),
-                  onTap: () {},
+                  onTap: () {
+                    Modular.to.pushNamed("/Choose-Deli");
+                  },
                 ),
                 ListTile(
                   leading: const Icon(Icons.email, color: Color(0xFF4f4d1f)),
@@ -127,15 +124,19 @@ class _MenuState extends State<Menu> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       // crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        if ( snapshot.data?["photoURL"] != null && snapshot.data?["photoURL"] != "" ) CircleAvatar(
-                                radius: 55.0,
-                                foregroundImage:
-                                    NetworkImage(snapshot.data?["photoURL"] ?? ""),
-                              ) else const CircleAvatar(
-                                radius: 55.0,
-                                foregroundImage:
-                                    AssetImage("assets/images/user.png"),
-                              ),
+                        if (snapshot.data?["photoURL"] != null &&
+                            snapshot.data?["photoURL"] != "")
+                          CircleAvatar(
+                            radius: 55.0,
+                            foregroundImage:
+                                NetworkImage(snapshot.data?["photoURL"] ?? ""),
+                          )
+                        else
+                          const CircleAvatar(
+                            radius: 55.0,
+                            foregroundImage:
+                                AssetImage("assets/images/user.png"),
+                          ),
                         const SizedBox(
                           height: 20.0,
                         ),
@@ -222,8 +223,8 @@ class _MenuState extends State<Menu> {
                     await signOut();
                     setState(() {});
                     // Modular.to.navigate("/Login");
-                    Navigator.pushNamedAndRemoveUntil(context, '/Login', ModalRoute.withName('/Login'));
-
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, '/Login', ModalRoute.withName('/Login'));
                   },
                 ),
               ],

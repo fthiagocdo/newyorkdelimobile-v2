@@ -8,7 +8,7 @@ abstract class IApiClient{
   Future getMenuItens(String menuTypeID);
   Future getMenuExtras(String menuItemID);
   Future getMenuChoices(String menuItemID);
-  Future listShops(String openedShops);
+  Future listShops(bool openedShops);
   Future sendMessage(String name, String reply, String message);
   Future deleteUser();
 }
