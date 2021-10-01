@@ -7,6 +7,7 @@ import 'package:new_york_delivery_app/app/components/Menu/menu.dart';
 import 'package:new_york_delivery_app/app/repositories/API_client.repositories.dart';
 import 'package:new_york_delivery_app/app/services/firebase/firebase_auth.dart';
 import 'package:new_york_delivery_app/app/views/Choose%20A%20Deli%20Screen/components/CardDeli/card_deli.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ChooseADeliScreen extends StatefulWidget {
   const ChooseADeliScreen({Key? key}) : super(key: key);
@@ -37,6 +38,8 @@ class _ChooseADeliScreenState extends State<ChooseADeliScreen> {
 
   @override
   Widget build(BuildContext context) {
+      
+    
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -72,6 +75,10 @@ class _ChooseADeliScreenState extends State<ChooseADeliScreen> {
                             address: snapshot.data![item]['address'],
                             onTap: () async{
                               print('${snapshot.data![item]['id']}');
+                              SharedPreferences prefs = await SharedPreferences.getInstance();
+                              prefs.setInt('menuTypes', snapshot.data![item]['id'] as int);
+                              Modular.to.pushNamed("/Menu-Types");
+
                             },
                           );                              
                         },

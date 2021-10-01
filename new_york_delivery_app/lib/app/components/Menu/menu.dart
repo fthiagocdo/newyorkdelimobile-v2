@@ -13,11 +13,12 @@ class Menu extends StatefulWidget {
 class _MenuState extends State<Menu> {
   Future<Map> getMenu() async {
     User? user = await initializeFirebaseLogin();
+
     if (user != null) {
       return {
         "name": user.displayName.toString() != "null"
             ? user.displayName.toString()
-            : "User",
+            : "",
         "email": user.email ?? "",
         "photoURL": user.photoURL ?? ""
       };
@@ -74,7 +75,11 @@ class _MenuState extends State<Menu> {
                     style: TextStyle(color: Color(0xFF4f4d1f)),
                   ),
                   onTap: () {
-                    
+                    if (Modular.to.localPath != "Menu-Types") {
+                      Modular.to.pushNamed("/Menu-Types");
+                    } else {
+                      Modular.to.pop(context);
+                    }
                   },
                 ),
                 ListTile(
@@ -82,7 +87,11 @@ class _MenuState extends State<Menu> {
                   title: const Text('Change Deli',
                       style: TextStyle(color: Color(0xFF4f4d1f))),
                   onTap: () {
-                    Modular.to.pushNamed("/Choose-Deli");
+                    if (Modular.to.localPath != "Choose-Deli") {
+                      Modular.to.pushNamed("/Choose-Deli");
+                    } else {
+                      Modular.to.pop(context);
+                    }
                   },
                 ),
                 ListTile(
@@ -90,7 +99,11 @@ class _MenuState extends State<Menu> {
                   title: const Text('Contact Us',
                       style: TextStyle(color: Color(0xFF4f4d1f))),
                   onTap: () {
-                    Modular.to.pushNamed("/Contact-me");
+                    if (Modular.to.localPath != "Contact-me") {
+                      Modular.to.pushNamed("/Contact-me");
+                    } else {
+                      Modular.to.pop(context);
+                    }
                   },
                 ),
                 ListTile(
@@ -98,7 +111,11 @@ class _MenuState extends State<Menu> {
                   title: const Text('Login',
                       style: TextStyle(color: Color(0xFF4f4d1f))),
                   onTap: () {
-                    Modular.to.pushNamed("/Login");
+                    if (Modular.to.localPath != "Login") {
+                      Modular.to.pushNamed("/Login");
+                    } else {
+                      Modular.to.pop(context);
+                    }
                   },
                 ),
               ],
@@ -141,13 +158,16 @@ class _MenuState extends State<Menu> {
                           height: 20.0,
                         ),
                         snapshot.data?["name"] == ""
-                            ? Text(
-                                snapshot.data!["email"],
-                                style: const TextStyle(
-                                    fontSize: 20.0,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w800),
-                              )
+                            ? Padding(
+                              padding: const EdgeInsets.only(top:5.0),
+                              child: Text(
+                                  snapshot.data!["email"],
+                                  style: const TextStyle(
+                                      fontSize: 16.0,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w800),
+                                ),
+                            )
                             : Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -184,21 +204,35 @@ class _MenuState extends State<Menu> {
                     style: TextStyle(color: Color(0xFF4f4d1f)),
                   ),
                   onTap: () {
-                    Modular.to.pushNamed("/Profile");
+                    if (Modular.to.localPath != "Profile") {
+                      Modular.to.pushNamed("/Profile");
+                    } else {
+                      Modular.to.pop(context);
+                    }
                   },
                 ),
                 ListTile(
                   leading: const Icon(Icons.home, color: Color(0xFF4f4d1f)),
                   title: const Text('Home',
                       style: TextStyle(color: Color(0xFF4f4d1f))),
-                  onTap: () {},
+                  onTap: () {
+                    if (Modular.to.localPath != "Menu-Types") {
+                      Modular.to.pushNamed("/Menu-Types");
+                    } else {
+                      Modular.to.pop(context);
+                    }
+                  },
                 ),
                 ListTile(
                   leading: const Icon(Icons.email, color: Color(0xFF4f4d1f)),
                   title: const Text('Contact Us',
                       style: TextStyle(color: Color(0xFF4f4d1f))),
                   onTap: () {
-                    Modular.to.pushNamed("/Contact-me");
+                    if (Modular.to.localPath != "Contact-me") {
+                      Modular.to.pushNamed("/Contact-me");
+                    } else {
+                      Modular.to.pop(context);
+                    }
                   },
                 ),
                 ListTile(

@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:new_york_delivery_app/app/components/MainButton/main_button.dart';
 import 'package:new_york_delivery_app/app/components/TextInput/text_input.dart';
 import 'package:new_york_delivery_app/app/repositories/API_client.repositories.dart';
