@@ -88,8 +88,10 @@ class ApiClientRepository implements IApiClient {
   }
 
   @override
-  Future deleteUser() async {
-    // TODO: implement deleteUser
-    throw UnimplementedError();
+  Future getImages(String menuTypeID) async{
+   Response result = await client.get('http://www.ftcdevsolutions.com/newyorkdelidelivery/api/menuitem/image/103',{});
+   return result;
   }
+
+ 
 }

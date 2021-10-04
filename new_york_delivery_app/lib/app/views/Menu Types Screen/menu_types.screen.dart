@@ -15,20 +15,18 @@ class MenuTypesScreen extends StatefulWidget {
 }
 
 class _MenuTypesScreenState extends State<MenuTypesScreen> {
-
   ApiClientRepository repository = Modular.get<ApiClientRepository>();
-  Future<List?> getMenuTypesDeli() async{
+
+  Future<List?> getMenuTypesDeli() async {
     int? menuTypes = await getMenuTypesDeliObject();
-    if(!menuTypes!.isNaN){
+    if (!menuTypes!.isNaN) {
       var result = await repository.getMenuTypes(menuTypes.toString());
       // print(jsonDecode(result.toString()));
       return jsonDecode(result.toString())['list'];
-    }
-    else{
+    } else {
       Modular.to.popAndPushNamed("/Choose-Deli");
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -56,9 +54,16 @@ class _MenuTypesScreenState extends State<MenuTypesScreen> {
                 ),
                 child: ListView.builder(
                   itemCount: snapshot.data!.length,
-                  itemBuilder: (context, index){
-                    return MenuTypesItem(title: snapshot.data![index]['name'], onTap: (){});
-                })
+                  itemBuilder: (context, index) {
+                    return MenuTypesItem(
+                      title: snapshot.data![index]['name'],
+                      onTap: () {
+                        Modular.to.pushNamed("/Menu-Itens",
+                            arguments: snapshot.data![index]['id']);
+                      },
+                    );
+                  },
+                ),
               );
             } else {
               return const Center(

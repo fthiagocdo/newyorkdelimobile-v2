@@ -26,11 +26,12 @@ class MenuTypesItem extends StatelessWidget {
           onTap: onTap,
         ),
         title: Container(
-          margin: const EdgeInsets.only(right:10.0),
+          margin: const EdgeInsets.only(right:2.0),
           child: Text(
             title,
             style: const TextStyle(
-                color: Color(0xFF4f4d1f), fontFamily: "KGBrokenVesselsSketch"),
+                color: Color(0xFF4f4d1f), fontFamily: "KGBrokenVesselsSketch",
+                fontSize: 25.0),
           ),
         ),
       ),
