@@ -1,7 +1,7 @@
 // ignore_for_file: avoid_print, prefer_typing_uninitialized_variables
 
 import 'dart:convert';
-
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -18,6 +18,34 @@ class MenuItemScreen extends StatefulWidget {
 
 class _MenuItemScreenState extends State<MenuItemScreen> {
   ApiClientRepository repository = Modular.get<ApiClientRepository>();
+  bool showScreen = true;
+  Future<Map> hasExtraOrChoice(String menuItemID) async {
+    Map data = {"menuExtras": {}, "menuChoices": {}};
+    var extraData;
+    var choicesData;
+    try {
+      extraData = await repository.getMenuExtras(menuItemID);
+      choicesData = await repository.getMenuChoices(menuItemID);
+      print(extraData.data);
+      print("\n");
+      print(choicesData.data);
+      if (extraData.data['error'] && choicesData.data['error']) {
+        throw Exception("Error on DB");
+      }
+    } catch (e) {
+      print(e);
+    }
+
+    if (extraData.data['message'] == "No records found." &&
+        choicesData.data['message'] == "No records found.") {
+      return {"data": false};
+    } else {
+      data['menuExtras'] = extraData.data;
+      data['menuChoices'] = choicesData.data;
+      data['data'] = true;
+      return data;
+    }
+  }
 
   Future<Map> getMenuItensDeli() async {
     Map data = {"itens": [], "fotoUrl": ""};
@@ -73,17 +101,28 @@ class _MenuItemScreenState extends State<MenuItemScreen> {
                         height: 100.0,
                       ),
                     ),
-                   
-
                     Expanded(
                       flex: 2,
                       child: ListView.builder(
                         itemCount: snapshot.data!['itens']!.length,
                         itemBuilder: (context, index) {
                           return ItensMenu(
-                              itemName: snapshot.data!['itens']![index]['name'],
-                              price: snapshot.data!['itens']![index]['price'],
-                              onTap: () {});
+                            itemName: snapshot.data!['itens']![index]
+                                ['name'],
+                            price: snapshot.data!['itens']![index]['price'],
+                            onTap: () async {
+                              Map goToMenuChoiceExtra =
+                                  await hasExtraOrChoice(snapshot
+                                      .data!['itens']![index]['id']
+                                      .toString());
+                              if (goToMenuChoiceExtra['data'] == true) {
+                                Modular.to.pushNamed("/Menu-Choice-Extras",
+                                    arguments: goToMenuChoiceExtra);
+                              } else {
+                                print("Não possui extras ou Choices");
+                              }
+                            },
+                          );
                         },
                       ),
                     ),

@@ -93,5 +93,19 @@ class ApiClientRepository implements IApiClient {
    return result;
   }
 
+  @override
+  Future addMenuItem(String userID, String shopID, String menuItemID, List<int> menuExtras, int menuChoice) async{
+    // http://www.ftcdevsolutions.com/newyorkdelidelivery/api/
+    // http://www.ftcdevsolutions.com/newyorkdelidelivery/api/checkout/additem/ONZHER7tLmd5wgkgqEWhQZOqfuX2/4?menuitem_id=16&menuExtras=26&menuChoices=1
+    Response result = await client.get(mainURL + 'checkout/additem/$userID/$shopID',{
+      "menuitem_id":menuItemID,
+      "menuExtras":menuExtras,
+      "menuChoices":menuChoice
+    });
+
+    return result;
+    
+  }
+
  
 }

@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:new_york_delivery_app/app/models/User.model.dart';
 import 'package:new_york_delivery_app/app/services/firebase/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Menu extends StatefulWidget {
   const Menu({Key? key}) : super(key: key);
@@ -28,6 +30,7 @@ class _MenuState extends State<Menu> {
 
   @override
   Widget build(BuildContext context) {
+    UserModel userModel = Modular.get<UserModel>();
     return FutureBuilder<Map<dynamic, dynamic>>(
       future: getMenu(),
       builder: (context, snapshot) {
@@ -254,9 +257,13 @@ class _MenuState extends State<Menu> {
                   title: const Text('Log out',
                       style: TextStyle(color: Color(0xFF4f4d1f))),
                   onTap: () async {
+                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                    await prefs.setInt('menuTypes',-1);
+                    userModel.id = "";
+                    userModel.provider = "";
+                    userModel.providerId = "";
                     await signOut();
                     setState(() {});
-                    // Modular.to.navigate("/Login");
                     Navigator.pushNamedAndRemoveUntil(
                         context, '/Login', ModalRoute.withName('/Login'));
                   },

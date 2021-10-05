@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:new_york_delivery_app/app/components/Menu/menu.dart';
@@ -17,14 +16,15 @@ class MenuTypesScreen extends StatefulWidget {
 class _MenuTypesScreenState extends State<MenuTypesScreen> {
   ApiClientRepository repository = Modular.get<ApiClientRepository>();
 
-  Future<List?> getMenuTypesDeli() async {
+  Future<List> getMenuTypesDeli() async {
     int? menuTypes = await getMenuTypesDeliObject();
-    if (!menuTypes!.isNaN) {
+    if (menuTypes! > 0 ) {
       var result = await repository.getMenuTypes(menuTypes.toString());
       // print(jsonDecode(result.toString()));
       return jsonDecode(result.toString())['list'];
     } else {
       Modular.to.popAndPushNamed("/Choose-Deli");
+      return [];
     }
   }
 
@@ -39,7 +39,7 @@ class _MenuTypesScreenState extends State<MenuTypesScreen> {
       ),
       drawer: const Menu(),
       body: SafeArea(
-        child: FutureBuilder<List?>(
+        child: FutureBuilder<List>(
           future: getMenuTypesDeli(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {

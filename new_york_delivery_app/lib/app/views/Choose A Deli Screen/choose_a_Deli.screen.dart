@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -49,10 +50,10 @@ class _ChooseADeliScreenState extends State<ChooseADeliScreen> {
       ),
       drawer: const Menu(),
       body: SafeArea(
-        child: FutureBuilder(
-          future: initializationFirebase(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
+        child: FutureBuilder<User?>(
+          future: initializeFirebaseLogin(),
+          builder: (context, snapshotFirebase) {
+            if (snapshotFirebase.connectionState == ConnectionState.done) {
               return Container(
                 decoration: const BoxDecoration(
                   image: DecorationImage(
@@ -74,11 +75,11 @@ class _ChooseADeliScreenState extends State<ChooseADeliScreen> {
                             deliName: snapshot.data![item]['name'],
                             address: snapshot.data![item]['address'],
                             onTap: () async{
-                              print('${snapshot.data![item]['id']}');
                               SharedPreferences prefs = await SharedPreferences.getInstance();
+                              // print('${snapshot.data![item]['id']}');
                               prefs.setInt('menuTypes', snapshot.data![item]['id'] as int);
                               Modular.to.pushNamed("/Menu-Types");
-
+                              
                             },
                           );                              
                         },

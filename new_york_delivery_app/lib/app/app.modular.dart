@@ -1,10 +1,12 @@
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:new_york_delivery_app/app/models/User.model.dart';
 import 'package:new_york_delivery_app/app/repositories/API_client.repositories.dart';
 import 'package:new_york_delivery_app/app/services/ClientHttp.Service.dart';
 import 'package:new_york_delivery_app/app/views/Choose%20A%20Deli%20Screen/choose_a_Deli.screen.dart';
 
 import 'package:new_york_delivery_app/app/views/Contact%20Me%20Screen/contact_me.screen.dart';
 import 'package:new_york_delivery_app/app/views/Login%20screen/login.screen.dart';
+import 'package:new_york_delivery_app/app/views/Menu%20Extra-Choice%20Screen/extra-choice.screen.dart';
 import 'package:new_york_delivery_app/app/views/Menu%20Item%20Screen/menu_item.screen.dart';
 import 'package:new_york_delivery_app/app/views/Menu%20Types%20Screen/menu_types.screen.dart';
 import 'package:new_york_delivery_app/app/views/Profile%20Screen/profile.screen.dart';
@@ -18,6 +20,7 @@ class AppModule extends Module {
   List<Bind> get binds => [
     Bind<IHttp>((i) => HttpService()),
     Bind<ApiClientRepository>((i) => ApiClientRepository(client:i.get())),
+    Bind.lazySingleton((i) => UserModel("","",""))
   ];
 
   @override
@@ -30,5 +33,6 @@ class AppModule extends Module {
     ChildRoute('/Choose-Deli', child: (_,args) => const ChooseADeliScreen()),
     ChildRoute('/Menu-Types', child: (_,args) => const MenuTypesScreen()),
     ChildRoute('/Menu-Itens', child: (_,args) => MenuItemScreen(menuTypeID: args.data,)),
+    ChildRoute('/Menu-Choice-Extras', child: (_,args) => ExtraChoiceScreen(menuItens:  args.data,)),
   ];
 }

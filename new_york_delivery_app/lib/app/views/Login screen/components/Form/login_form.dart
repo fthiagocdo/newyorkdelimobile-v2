@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:new_york_delivery_app/app/components/MainButton/main_button.dart';
 import 'package:new_york_delivery_app/app/components/TextInput/text_input.dart';
+import 'package:new_york_delivery_app/app/models/User.model.dart';
 import 'package:new_york_delivery_app/app/repositories/API_client.repositories.dart';
 import 'package:new_york_delivery_app/app/services/firebase/firebase_auth.dart';
 import 'package:new_york_delivery_app/app/utils/show_dialog.dart';
@@ -32,6 +33,7 @@ class _FormState extends State<FormLogin> {
   @override
   Widget build(BuildContext context) {
     ApiClientRepository _clientRepository = Modular.get<ApiClientRepository>();
+    UserModel userModel = Modular.get<UserModel>();
 
     void _login() async {
       setState(() {
@@ -153,6 +155,11 @@ class _FormState extends State<FormLogin> {
             ],
           );
         }
+        userModel.id = result.data['details_customer']['customer']['id'].toString();
+        userModel.provider =
+            result.data['details_customer']['customer']['provider'];
+        userModel.providerId =
+            result.data['details_customer']['customer']['provider_id'];
       } else {
         setState(() {
           showScreen = true;
@@ -178,6 +185,7 @@ class _FormState extends State<FormLogin> {
       setState(() {
         showScreen = true;
       });
+
       Modular.to.navigate("Choose-Deli");
     }
 
@@ -240,6 +248,12 @@ class _FormState extends State<FormLogin> {
           showScreen = true;
         });
         // print("Google");
+        userModel.id = result.data['details_customer']['customer']['id'].toString();
+        userModel.provider =
+            result.data['details_customer']['customer']['provider'];
+        userModel.providerId =
+            result.data['details_customer']['customer']['provider_id'];
+
         Modular.to.navigate("Choose-Deli");
       } else {
         setState(() {
@@ -352,6 +366,11 @@ class _FormState extends State<FormLogin> {
         });
         print(result.data);
         print(teste.data);
+        userModel.id = result.data['details_customer']['customer']['id'].toString();
+        userModel.provider =
+            result.data['details_customer']['customer']['provider'];
+        userModel.providerId =
+            result.data['details_customer']['customer']['provider_id'];
         Modular.to.navigate("Choose-Deli");
       } else {
         setState(() {

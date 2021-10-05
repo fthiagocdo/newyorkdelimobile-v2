@@ -11,4 +11,5 @@ abstract class IApiClient{
   Future listShops(bool openedShops);
   Future sendMessage(String name, String reply, String message);
   Future getImages(String menuTypeID);
+  Future addMenuItem(String userID, String shopID, String menuItemID, List<int> menuExtras, int menuChoice);
 }
