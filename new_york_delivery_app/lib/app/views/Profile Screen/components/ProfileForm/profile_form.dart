@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:new_york_delivery_app/app/components/MainButton/main_button.dart';
 import 'package:new_york_delivery_app/app/components/TextInput/text_input.dart';
+import 'package:new_york_delivery_app/app/models/User.model.dart';
 import 'package:new_york_delivery_app/app/repositories/API_client.repositories.dart';
 import 'package:new_york_delivery_app/app/services/firebase/firebase_auth.dart';
 import 'package:new_york_delivery_app/app/utils/show_dialog.dart';
@@ -17,6 +18,7 @@ class ProfileForm extends StatefulWidget {
 
 class _ProfileFormState extends State<ProfileForm> {
   ApiClientRepository apiClientRepository = Modular.get<ApiClientRepository>();
+  UserModel userModel = Modular.get<UserModel>();
   final _formKey = GlobalKey<FormState>();
   final TextEditingController username = TextEditingController();
   final TextEditingController email = TextEditingController();
@@ -66,7 +68,7 @@ class _ProfileFormState extends State<ProfileForm> {
       try {
         if (password.text.isNotEmpty) {
           try {
-            changePassword(password.text);
+            changePassword(userModel.password, password.text);
           } catch (e) {
             throw Exception("Error on Firebase");
           }
@@ -74,30 +76,40 @@ class _ProfileFormState extends State<ProfileForm> {
 
         // ignore: prefer_typing_uninitialized_variables
         var teste;
+        // print(widget.userData["userInfo"]["details_customer"]["customer"]
+        //           ["id"]);
+        // print(username.text);
+        // print(phone.text);
+        // print(postcode.text.isEmpty);
+        // print(address.text.isEmpty);
+        // print(widget.userData["userInfo"]["details_customer"]["customer"]
+        //           ["provider"]);
+        // return ;
         try {
           teste = await apiClientRepository.updateUser(
-              widget.userData["userInfo"]["details_customer"]["customer"]
-                  ["provider_id"],
+              widget.userData["userInfo"]["details_customer"]["customer"]["id"]
+                  .toString(),
               username.text,
-              phone.text,
-              postcode.text,
-              address.text,
+              phone.text.isEmpty ? "" : phone.text.toString(),
+              postcode.text.isEmpty ? "" : postcode.text.toString(),
+              address.text.isEmpty ? "" : address.text.toString(),
               receiveNotification == true ? "1" : "0",
               widget.userData["userInfo"]["details_customer"]["customer"]
                   ["provider"]);
         } catch (e) {
+          print(e);
           throw Exception("Error on DB");
         }
-
+        print(teste.data);
         if (teste.data["message"] ==
             "Creating default object from empty value") {
           throw Exception("Error on DB");
         }
       } catch (e) {
         print(e);
-      setState(() {
-        showScreen = true;
-      });
+        setState(() {
+          showScreen = true;
+        });
         await showDialogAlert(
           context: context,
           title: "Message",
@@ -112,13 +124,18 @@ class _ProfileFormState extends State<ProfileForm> {
                 buttonColor: const Color(0xFF4f4d1f),
                 sizeWidth: 100.0,
                 onPress: () {
-                  // Navigator.popUntil(context, ModalRoute.withName('/Menu'));
+                  Navigator.popUntil(context, ModalRoute.withName('/Menu'));
                 },
               ),
             ),
           ],
         );
       }
+      setState(() {
+        showScreen = true;
+      });
+
+      Modular.to.pop();
     }
 
     return Stack(
@@ -181,16 +198,17 @@ class _ProfileFormState extends State<ProfileForm> {
               TextInput(
                 minLines: 1,
                 maxLines: 1,
-                isReadOnly: false,
+                isReadOnly: userModel.password == "" ? true : false,
                 controller: password,
                 validation: (value) {
-                  if (value == null || value.isEmpty) {
+                  if (userModel.password != "" &&
+                      (value == null || value.isEmpty)) {
                     return "Field 'password' must be filled.";
                   }
-                  if (value.length < 8) {
+                  if (userModel.password != "" && (value!.length < 8)) {
                     return "Password must be at least 8 characters long.";
                   }
-                  if (value.length > 32) {
+                  if (userModel.password != "" && (value!.length > 32)) {
                     return "Password must be a maximum of 32 characters.";
                   }
                   return null;
@@ -225,13 +243,15 @@ class _ProfileFormState extends State<ProfileForm> {
               TextInput(
                 minLines: 1,
                 maxLines: 1,
-                isReadOnly: false,
+                isReadOnly: userModel.password == "" ? true : false,
                 controller: confirm_password,
                 validation: (value) {
-                  if (value == null || value.isEmpty) {
+                  if (userModel.password != "" &&
+                      (value == null || value.isEmpty)) {
                     return "Field 'confirmPassword' must be filled.";
                   }
-                  if (value != confirm_password.text) {
+                  if (userModel.password != "" &&
+                      (value != confirm_password.text)) {
                     return "Password and Confirm Password do not match.";
                   }
 

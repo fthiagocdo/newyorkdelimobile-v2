@@ -106,6 +106,13 @@ class ApiClientRepository implements IApiClient {
     return result;
     
   }
+  @override
+  Future confirmCheckout(String userID,String shopID, List<int> deliveryOrCollect) async {
+    Response result = await client.get(mainURL + '/checkout/deliverorcollect/$userID/$shopID',{
+      "deliverorcollect":deliveryOrCollect
+    });
+    return result;
+  }
 
  
 }

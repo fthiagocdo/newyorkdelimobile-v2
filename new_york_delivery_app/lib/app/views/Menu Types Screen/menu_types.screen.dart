@@ -18,6 +18,8 @@ class _MenuTypesScreenState extends State<MenuTypesScreen> {
 
   Future<List> getMenuTypesDeli() async {
     int? menuTypes = await getMenuTypesDeliObject();
+    print("Entrou Aqui");
+    print(menuTypes);
     if (menuTypes! > 0 ) {
       var result = await repository.getMenuTypes(menuTypes.toString());
       // print(jsonDecode(result.toString()));

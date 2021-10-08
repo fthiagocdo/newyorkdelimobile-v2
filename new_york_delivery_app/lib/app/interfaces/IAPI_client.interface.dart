@@ -12,4 +12,5 @@ abstract class IApiClient{
   Future sendMessage(String name, String reply, String message);
   Future getImages(String menuTypeID);
   Future addMenuItem(String userID, String shopID, String menuItemID, List<int> menuExtras, int menuChoice);
+  Future confirmCheckout(String userID,String shopID, List<int> deliveryOrCollect);
 }

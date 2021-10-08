@@ -106,6 +106,10 @@ class _MenuItemScreenState extends State<MenuItemScreen> {
                       child: ListView.builder(
                         itemCount: snapshot.data!['itens']!.length,
                         itemBuilder: (context, index) {
+                          print(snapshot.data!['itens']![index]
+                                ['name']);
+                          print(snapshot.data!['itens']![index]
+                                ['name'].length);
                           return ItensMenu(
                             itemName: snapshot.data!['itens']![index]
                                 ['name'],
@@ -116,6 +120,7 @@ class _MenuItemScreenState extends State<MenuItemScreen> {
                                       .data!['itens']![index]['id']
                                       .toString());
                               if (goToMenuChoiceExtra['data'] == true) {
+                              
                                 Modular.to.pushNamed("/Menu-Choice-Extras",
                                     arguments: goToMenuChoiceExtra);
                               } else {

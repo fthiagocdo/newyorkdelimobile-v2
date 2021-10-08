@@ -15,7 +15,7 @@ class ItemCheckbox extends StatelessWidget {
         Expanded(
           flex: 5,
           child: Container(
-            height: 80.0,
+            height: title.length <= 16 ? 55.0 : 80.0,
             margin: const EdgeInsets.only(right: 5.0, top: 5.0),
             decoration: const BoxDecoration(
               color: Color.fromRGBO(203, 178, 154, 1),
@@ -38,9 +38,8 @@ class ItemCheckbox extends StatelessWidget {
                       ),
                     ],
                   ),
-                  Container(
-                    height: 90.0,
-                    margin: const EdgeInsets.only(left: 10.0),
+                  SizedBox(
+                    height: title.length <= 16 ? 55.0 : 80.0,
                     child: Center(
                       child: SizedBox(
                         width: 130.0,
@@ -64,7 +63,7 @@ class ItemCheckbox extends StatelessWidget {
         Expanded(
           flex: 2,
           child: Container(
-            height: 80.0,
+            height: title.length <= 16 ? 55.0 : 80.0,
             margin: const EdgeInsets.only(right: 5.0, top: 5.0),
             child: Align(
               alignment: Alignment.center,

@@ -26,9 +26,9 @@ Future signInUsingEmailPassword({
   await initializeFirebase();
   FirebaseAuth auth = FirebaseAuth.instance;
   User? user;
-
+  UserCredential? userCredential;
   try {
-    UserCredential userCredential = await auth.signInWithEmailAndPassword(
+    userCredential = await auth.signInWithEmailAndPassword(
       email: email,
       password: password,
     );
@@ -36,14 +36,29 @@ Future signInUsingEmailPassword({
   } on FirebaseAuthException catch (e) {
     if (e.code == 'user-not-found') {
       print('No user found for that email.');
-      return ['No user found for that email.', true];
+      return {
+        "data": null,
+        "message": 'No user found for that email.',
+        "error": true
+      };
     } else if (e.code == 'wrong-password') {
       print('Wrong password provided.');
-      return ['Wrong password provided.', true];
+      return {
+        "data": null,
+        "message": 'Wrong password provided.',
+        "error": true
+      };
+    }else{
+      return {
+        "data": null,
+        "message": 'Error: '+e.code,
+        "error": true
+      };
     }
   }
+  
 
-  return [user, false];
+  return {"data": user, "message": '', "error": false};
 }
 
 Future<User?> registerUsingEmailPassword({
@@ -80,15 +95,44 @@ Future<void> sendPasswordResetEmail(String email) async {
   return auth.sendPasswordResetEmail(email: email);
 }
 
-void changePassword(String newPassword) async {
-  var user = FirebaseAuth.instance.currentUser;
+// void changePassword(String newPassword) async {
+//   var user = FirebaseAuth.instance.currentUser;
 
-  if (user != null) {
-    try {
-      await user.updatePassword(newPassword);
-    } catch (e) {
-      print(e);
-      print("Error on Firebase, please try later");
+//   if (user != null) {
+//     try {
+//       await user.updatePassword(newPassword);
+//     } catch (e) {
+//       print(e);
+//       print("Error on Firebase, please try later");
+//     }
+//   }
+// }
+
+void changePassword(String oldPassword, String newPassword) async {
+  FirebaseApp firebaseApp = await Firebase.initializeApp();
+  User? user = FirebaseAuth.instance.currentUser;
+  String? email = user!.email;
+
+  //Create field for user to input old password
+
+  try {
+    UserCredential userCredential =
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
+      email: email ?? "",
+      password: oldPassword,
+    );
+
+    user.updatePassword(newPassword).then((_) {
+      print("Successfully changed password");
+    }).catchError((error) {
+      print("Password can't be changed" + error.toString());
+      //This might happen, when the wrong password is in, the user isn't found, or if the user hasn't logged in recently.
+    });
+  } on FirebaseAuthException catch (e) {
+    if (e.code == 'user-not-found') {
+      print('No user found for that email.');
+    } else if (e.code == 'wrong-password') {
+      print('Wrong password provided for that user.');
     }
   }
 }
@@ -142,7 +186,6 @@ Future<UserCredential> signInWithFacebook() async {
   // Once signed in, return the UserCredential
   return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
 }
-
 
 Future<void> signOut() async {
   FirebaseApp firebaseApp = await Firebase.initializeApp();

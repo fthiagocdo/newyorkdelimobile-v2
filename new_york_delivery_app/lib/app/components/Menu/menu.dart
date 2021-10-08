@@ -14,6 +14,7 @@ class Menu extends StatefulWidget {
 
 class _MenuState extends State<Menu> {
   Future<Map> getMenu() async {
+    
     User? user = await initializeFirebaseLogin();
 
     if (user != null) {
@@ -215,8 +216,8 @@ class _MenuState extends State<Menu> {
                   },
                 ),
                 ListTile(
-                  leading: const Icon(Icons.home, color: Color(0xFF4f4d1f)),
-                  title: const Text('Home',
+                  leading: const Icon(Icons.menu,color: Color(0xFF4f4d1f)),
+                  title: const Text('Menu',
                       style: TextStyle(color: Color(0xFF4f4d1f))),
                   onTap: () {
                     if (Modular.to.localPath != "Menu-Types") {
@@ -243,7 +244,9 @@ class _MenuState extends State<Menu> {
                       color: Color(0xFF4f4d1f)),
                   title: const Text('Order History',
                       style: TextStyle(color: Color(0xFF4f4d1f))),
-                  onTap: () {},
+                  onTap: () {
+                    Modular.to.pushNamed("/Collect");
+                  },
                 ),
                 ListTile(
                   leading: const Icon(Icons.shopping_cart_outlined,

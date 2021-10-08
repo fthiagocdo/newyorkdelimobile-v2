@@ -1,9 +1,13 @@
 // ignore_for_file: avoid_print, prefer_typing_uninitialized_variables
 import 'dart:ui';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:new_york_delivery_app/app/components/MainButton/main_button.dart';
 import 'package:new_york_delivery_app/app/models/User.model.dart';
 import 'package:new_york_delivery_app/app/repositories/API_client.repositories.dart';
+import 'package:new_york_delivery_app/app/services/firebase/firebase_auth.dart';
+import 'package:new_york_delivery_app/app/utils/show_dialog.dart';
 import 'package:new_york_delivery_app/app/views/Menu%20Extra-Choice%20Screen/components/ItemCheckbox/item_checkbox.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -47,21 +51,18 @@ class _ExtraChoiceScreenState extends State<ExtraChoiceScreen> {
     super.initState();
   }
 
-  void sendOrder() async {
-    setState(() {
-      showScreen = false;
-    });
+  Future<void> sendOrder() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int? shopID = prefs.getInt('menuTypes');
-    
+
     var result;
-    // print("\n");
-    // print(shopID);
+    print("\n");
+    print(shopID);
     // print(extrasMenu);
     // print(choicesMenu);
     // print(userModel.id);
     // print(checkboxExtrasData[0]['data']['menuitem_id']);
-    
+
     try {
       result = await repository.addMenuItem(
         userModel.id,
@@ -73,15 +74,8 @@ class _ExtraChoiceScreenState extends State<ExtraChoiceScreen> {
     } catch (e) {
       print("ERROR ON BD");
       print(e);
-      setState(() {
-        showScreen = true;
-      });
     }
-    
-    setState(() {
-      showScreen = true;
-    });
-    // print(result);
+    print(result);
   }
 
   @override
@@ -171,6 +165,9 @@ class _ExtraChoiceScreenState extends State<ExtraChoiceScreen> {
                                     );
                                   },
                                 ),
+                              ),
+                              const SizedBox(
+                                height: 90.0,
                               )
                             ],
                           ),
@@ -201,7 +198,7 @@ class _ExtraChoiceScreenState extends State<ExtraChoiceScreen> {
                                 ),
                               ),
                               Expanded(
-                                flex: 2,
+                                flex: 1,
                                 child: ListView.builder(
                                   itemCount: widget
                                       .menuItens['menuChoices']['list'].length,
@@ -233,6 +230,9 @@ class _ExtraChoiceScreenState extends State<ExtraChoiceScreen> {
                                     );
                                   },
                                 ),
+                              ),
+                              const SizedBox(
+                                height: 90.0,
                               )
                             ],
                           ),
@@ -241,21 +241,77 @@ class _ExtraChoiceScreenState extends State<ExtraChoiceScreen> {
                   Positioned(
                     bottom: 10.0,
                     child: Container(
-                      width: 110.0,
-                      height: 110.0,
+                      width: 100.0,
+                      height: 100.0,
                       decoration: const BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(100.0)),
                         color: Color(0xFF4f4d1f),
                       ),
                       child: GestureDetector(
-                        onTap: () {
-                          sendOrder();
+                        onTap: () async {
+                          setState(() {
+                            showScreen = false;
+                          });
+                          User? user = await initializeFirebaseLogin();
+                          print(user);
+                          if (user == null) {
+                            Navigator.pushNamedAndRemoveUntil(context, '/Login',
+                                ModalRoute.withName('/Login'));
+                            return;
+                          }
+                          setState(() {
+                            showScreen = true;
+                          });
+                          return showDialogAlert(
+                              title: "Message",
+                              message:
+                                  "Do you want to buy something else or go to checkout?",
+                              context: context,
+                              actions: [
+                                const SizedBox(
+                                  width: 10.0,
+                                ),
+                                MainButton(
+                                  brand: const Icon(Icons.add),
+                                  hasIcon: false,
+                                  text: "Checkout",
+                                  buttonColor: const Color(0xFF4f4d1f),
+                                  sizeWidth: 100.0,
+                                  onPress: () {
+                                    Modular.to.pop();
+                                    // Navigator.pushNamedAndRemoveUntil(
+                                    //     context,
+                                    //     '/Checkout',
+                                    //     ModalRoute.withName('/Menu-Types'));
+                                  },
+                                ),
+                                const SizedBox(
+                                  width: 30.0,
+                                ),
+                                MainButton(
+                                  brand: const Icon(Icons.add),
+                                  hasIcon: false,
+                                  text: "Buy More",
+                                  buttonColor: const Color(0xFF4f4d1f),
+                                  sizeWidth: 100.0,
+                                  onPress: () async{
+                                    await sendOrder();
+                                    Navigator.pushNamedAndRemoveUntil(
+                                        context,
+                                        '/Menu-Types',
+                                        ModalRoute.withName('/Menu-Itens'));
+                                  },
+                                ),
+                                const SizedBox(
+                                  width: 10.0,
+                                ),
+                              ]);
                         },
                         child: Stack(
                           children: const [
                             Positioned(
                               top: 20.0,
-                              left: 20.0,
+                              left: 15.0,
                               child: SizedBox(
                                 width: 70.0,
                                 child: Text(
@@ -273,7 +329,7 @@ class _ExtraChoiceScreenState extends State<ExtraChoiceScreen> {
                             ),
                             Positioned(
                               top: 55.0,
-                              left: 25.0,
+                              left: 20.0,
                               child: Icon(
                                 Icons.keyboard_arrow_down_outlined,
                                 size: 60.0,
