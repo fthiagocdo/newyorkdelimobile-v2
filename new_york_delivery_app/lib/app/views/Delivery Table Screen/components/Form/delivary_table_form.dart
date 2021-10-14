@@ -1,8 +1,6 @@
-// ignore_for_file: avoid_print, prefer_typing_uninitialized_variables
+// ignore_for_file: avoid_print
 
 import 'dart:ui';
-
-import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:new_york_delivery_app/app/components/MainButton/main_button.dart';
@@ -12,28 +10,26 @@ import 'package:new_york_delivery_app/app/repositories/API_client.repositories.d
 import 'package:new_york_delivery_app/app/utils/get_deli_menu_types.dart';
 import 'package:new_york_delivery_app/app/utils/show_dialog.dart';
 
-class CollectForm extends StatefulWidget {
-  const CollectForm({Key? key}) : super(key: key);
+class DeliveryTableForm extends StatefulWidget {
+  const DeliveryTableForm({Key? key}) : super(key: key);
 
   @override
-  _CollectFormState createState() => _CollectFormState();
+  _DeliveryTableFormState createState() => _DeliveryTableFormState();
 }
 
-class _CollectFormState extends State<CollectForm> {
-  bool showScreen = true;
+class _DeliveryTableFormState extends State<DeliveryTableForm> {
   final _formKey = GlobalKey<FormState>();
   final ApiClientRepository repository = Modular.get<ApiClientRepository>();
   final UserModel user = Modular.get<UserModel>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _tableNumberController = TextEditingController();
+  bool showScreen = true;
 
-  DateTime selectedDate = DateTime.now();
-
-  void confirmCollect() async {
-    print("entrou");
-    print(selectedDate);
-    
-    return;
+  void confirmNumberTable() async {
+    setState(() {
+      showScreen = false;
+    });
     int? shopID = await getMenuTypesDeliObject();
     if (shopID != null) {
       var result;
@@ -43,7 +39,32 @@ class _CollectFormState extends State<CollectForm> {
       } catch (e) {
         print('Error on BD:');
         print(e);
+        setState(() {
+          showScreen = true;
+        });
+        return showDialogAlert(
+          title: "Message",
+          message: "Sorry, We've got an Error, please try later",
+          context: context,
+          actions: [
+            Center(
+              child: MainButton(
+                brand: const Icon(Icons.add),
+                hasIcon: false,
+                text: "OK",
+                buttonColor: const Color(0xFF4f4d1f),
+                sizeWidth: 100.0,
+                onPress: () {
+                  Modular.to.pop();
+                },
+              ),
+            ),
+          ],
+        );
       }
+      setState(() {
+        showScreen = true;
+      });
       print(result);
     }
   }
@@ -134,6 +155,27 @@ class _CollectFormState extends State<CollectForm> {
                 minLines: 1,
                 maxLines: 1,
                 isReadOnly: false,
+                controller: _tableNumberController,
+                validation: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Field 'table number' must be filled.";
+                  }
+                  return null;
+                },
+                label: "Please inform the number of your table",
+                keyboardType: TextInputType.number,
+                hasSuffixIcon: false,
+                suffixIcon: GestureDetector(),
+                cursorColor: const Color(0xFF4f4d1f),
+                showContent: true,
+              ),
+              const SizedBox(
+                height: 20.0,
+              ),
+              TextInput(
+                minLines: 1,
+                maxLines: 1,
+                isReadOnly: false,
                 controller: _phoneController,
                 validation: (value) {
                   if (value == null || value.isEmpty) {
@@ -149,59 +191,6 @@ class _CollectFormState extends State<CollectForm> {
                 showContent: true,
               ),
               const SizedBox(
-                height: 10.0,
-              ),
-              // Center(child: Platform.isIOS ? iOSPicker() : androidDropdown(),)
-              DateTimePicker(
-                type: DateTimePickerType.time,
-
-                initialValue:
-                    '${selectedDate.hour}:${'${selectedDate.minute}'.length == 1 ?  '0${selectedDate.minute}': '${selectedDate.minute}'}',
-                // firstDate: DateTime.now(),
-                // lastDate: DateTime(2100),
-                // icon: const Icon(Icons.event),
-                // dateLabelText: 'Date',
-                timeLabelText: "Hour",
-                // validator: (date) {
-                //   String hour = date!.split(":")[0];
-                //   String minutes = date.split(":")[1];
-                //   TimeOfDay teste = TimeOfDay(
-                //       hour: int.parse(hour), minute: int.parse(minutes));
-                //   final now = DateTime.now();
-                //   var dt = DateTime(
-                //       now.year, now.month, now.day, teste.hour, teste.minute);
-                //   if (dt.compareTo(DateTime.now().add(const Duration(minutes: 5))) < 0) {
-                //     // return "Field 'time to collect' must be filled.";
-                //     return "Field 'time to collect' must be above ${DateTime.now().hour} : ${'${DateTime.now().add(const Duration(minutes: 5)).minute}'.length == 1 ?  '0${DateTime.now().add(const Duration(minutes: 5)).minute}': '${DateTime.now().add(const Duration(minutes: 5)).minute}'}";
-                //   }
-                //   return null;
-                // },
-                onChanged: (val) {
-                  String hour = val.split(":")[0];
-                  String minutes = val.split(":")[1];
-                  TimeOfDay teste = TimeOfDay(
-                      hour: int.parse(hour), minute: int.parse(minutes));
-                  final now = DateTime.now();
-                  var dt = DateTime(
-                      now.year, now.month, now.day, teste.hour, teste.minute);
-                      selectedDate = dt;
-                },
-                onSaved: (val) {
-                  String hour = val!.split(":")[0];
-                  String minutes = val.split(":")[1];
-
-                 
-                  TimeOfDay teste = TimeOfDay(
-                      hour: int.parse(hour), minute: int.parse(minutes));
-                  final now = DateTime.now();
-                  var dt = DateTime(
-                      now.year, now.month, now.day, teste.hour, teste.minute);
-                      print(dt.toIso8601String());
-                      selectedDate = dt;
-                },
-              ),
-
-              const SizedBox(
                 height: 30.0,
               ),
               Center(
@@ -213,7 +202,7 @@ class _CollectFormState extends State<CollectForm> {
                   buttonColor: const Color(0xFF4f4d1f),
                   onPress: () async {
                     if (_formKey.currentState!.validate()) {
-                      confirmCollect();
+                      confirmNumberTable();
                     }
                   },
                 ),

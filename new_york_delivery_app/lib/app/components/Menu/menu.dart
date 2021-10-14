@@ -253,7 +253,9 @@ class _MenuState extends State<Menu> {
                       color: Color(0xFF4f4d1f)),
                   title: const Text('Checkout',
                       style: TextStyle(color: Color(0xFF4f4d1f))),
-                  onTap: () {},
+                  onTap: () {
+                    Modular.to.pushNamed("/Delivery-table");
+                  },
                 ),
                 ListTile(
                   leading: const Icon(Icons.logout, color: Color(0xFF4f4d1f)),

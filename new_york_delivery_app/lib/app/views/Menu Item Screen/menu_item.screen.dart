@@ -97,8 +97,28 @@ class _MenuItemScreenState extends State<MenuItemScreen> {
                       width: double.infinity,
                       child: Image.network(
                         'http://www.ftcdevsolutions.com/newyorkdelidelivery/api/menuitem/image/${widget.menuTypeID}',
-                        fit: BoxFit.fill,
                         height: 100.0,
+                        fit: BoxFit.cover,
+                        loadingBuilder: (BuildContext context, Widget child,
+                            ImageChunkEvent? loadingProgress) {
+                          // ignore: unnecessary_null_comparison
+                          if (loadingProgress == null) return child;
+                          return Center(
+                            child: CircularProgressIndicator(
+                              color: const Color(0xFF4f4d1f),
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded /
+                                      int.parse(loadingProgress
+                                          .expectedTotalBytes
+                                          .toString())
+                                  : null,
+                            ),
+                          );
+                        },
+                        errorBuilder: (BuildContext context, Object exception,
+                            StackTrace? stackTrace) {
+                          return const Center(child: Text('😢',style: TextStyle(fontSize: 80.0),));
+                        },
                       ),
                     ),
                     Expanded(
@@ -106,21 +126,16 @@ class _MenuItemScreenState extends State<MenuItemScreen> {
                       child: ListView.builder(
                         itemCount: snapshot.data!['itens']!.length,
                         itemBuilder: (context, index) {
-                          print(snapshot.data!['itens']![index]
-                                ['name']);
-                          print(snapshot.data!['itens']![index]
-                                ['name'].length);
+                          print(snapshot.data!['itens']![index]['name']);
+                          print(snapshot.data!['itens']![index]['name'].length);
                           return ItensMenu(
-                            itemName: snapshot.data!['itens']![index]
-                                ['name'],
+                            itemName: snapshot.data!['itens']![index]['name'],
                             price: snapshot.data!['itens']![index]['price'],
                             onTap: () async {
-                              Map goToMenuChoiceExtra =
-                                  await hasExtraOrChoice(snapshot
-                                      .data!['itens']![index]['id']
+                              Map goToMenuChoiceExtra = await hasExtraOrChoice(
+                                  snapshot.data!['itens']![index]['id']
                                       .toString());
                               if (goToMenuChoiceExtra['data'] == true) {
-                              
                                 Modular.to.pushNamed("/Menu-Choice-Extras",
                                     arguments: goToMenuChoiceExtra);
                               } else {

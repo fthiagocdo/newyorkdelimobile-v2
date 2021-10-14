@@ -6,6 +6,7 @@ import 'package:new_york_delivery_app/app/views/Add%20Collect%20Screen/add_colle
 import 'package:new_york_delivery_app/app/views/Choose%20A%20Deli%20Screen/choose_a_Deli.screen.dart';
 
 import 'package:new_york_delivery_app/app/views/Contact%20Me%20Screen/contact_me.screen.dart';
+import 'package:new_york_delivery_app/app/views/Delivery%20Table%20Screen/delivery_table.screen.dart';
 import 'package:new_york_delivery_app/app/views/Login%20screen/login.screen.dart';
 import 'package:new_york_delivery_app/app/views/Menu%20Extra-Choice%20Screen/extra-choice.screen.dart';
 import 'package:new_york_delivery_app/app/views/Menu%20Item%20Screen/menu_item.screen.dart';
@@ -36,5 +37,6 @@ class AppModule extends Module {
     ChildRoute('/Menu-Itens', child: (_,args) => MenuItemScreen(menuTypeID: args.data,)),
     ChildRoute('/Menu-Choice-Extras', child: (_,args) => ExtraChoiceScreen(menuItens:  args.data,)),
     ChildRoute('/Collect', child: (_,args) => const AddCollectScreen()),
+    ChildRoute('/Delivery-table', child: (_,args) => const DeliveryTableScreen()),
   ];
 }

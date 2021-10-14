@@ -1,5 +1,7 @@
+import 'dart:io';
+import 'dart:math';
 import 'dart:ui';
-
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:new_york_delivery_app/app/components/MainButton/main_button.dart';
@@ -10,8 +12,8 @@ import 'package:new_york_delivery_app/app/services/firebase/firebase_auth.dart';
 import 'package:new_york_delivery_app/app/utils/show_dialog.dart';
 
 class ProfileForm extends StatefulWidget {
-  Map userData = {};
-  ProfileForm({Key? key, required this.userData}) : super(key: key);
+  final Map userData;
+  const ProfileForm({Key? key, required this.userData}) : super(key: key);
   @override
   _ProfileFormState createState() => _ProfileFormState();
 }
@@ -61,82 +63,139 @@ class _ProfileFormState extends State<ProfileForm> {
 
   @override
   Widget build(BuildContext context) {
-    void changeUserInfo() async {
+    final _picker = ImagePicker();
+    // late Future<PickedFile?> pickedFile = Future.value(null);
+    // var imageFile;
+    File _image;
+
+    void getImage() async {
       setState(() {
         showScreen = false;
       });
-      try {
-        if (password.text.isNotEmpty) {
-          try {
-            changePassword(userModel.password, password.text);
-          } catch (e) {
-            throw Exception("Error on Firebase");
-          }
-        }
-
-        // ignore: prefer_typing_uninitialized_variables
-        var teste;
-        // print(widget.userData["userInfo"]["details_customer"]["customer"]
-        //           ["id"]);
-        // print(username.text);
-        // print(phone.text);
-        // print(postcode.text.isEmpty);
-        // print(address.text.isEmpty);
-        // print(widget.userData["userInfo"]["details_customer"]["customer"]
-        //           ["provider"]);
-        // return ;
-        try {
-          teste = await apiClientRepository.updateUser(
-              widget.userData["userInfo"]["details_customer"]["customer"]["id"]
-                  .toString(),
-              username.text,
-              phone.text.isEmpty ? "" : phone.text.toString(),
-              postcode.text.isEmpty ? "" : postcode.text.toString(),
-              address.text.isEmpty ? "" : address.text.toString(),
-              receiveNotification == true ? "1" : "0",
-              widget.userData["userInfo"]["details_customer"]["customer"]
-                  ["provider"]);
-        } catch (e) {
-          print(e);
-          throw Exception("Error on DB");
-        }
-        print(teste.data);
-        if (teste.data["message"] ==
-            "Creating default object from empty value") {
-          throw Exception("Error on DB");
-        }
-      } catch (e) {
-        print(e);
+      XFile? pickedImage = await _picker.pickImage(source: ImageSource.gallery);
+      print("PASSOU");
+      if (pickedImage == null) {
         setState(() {
+          print("DEU RUIM LEGALLLL");
           showScreen = true;
         });
-        await showDialogAlert(
-          context: context,
-          title: "Message",
-          message:
-              "It was not possible complete your request. Please try again later...",
-          actions: [
-            Center(
-              child: MainButton(
-                brand: const Icon(Icons.add),
-                hasIcon: false,
-                text: "OK",
-                buttonColor: const Color(0xFF4f4d1f),
-                sizeWidth: 100.0,
-                onPress: () {
-                  Navigator.popUntil(context, ModalRoute.withName('/Menu'));
-                },
-              ),
-            ),
-          ],
-        );
       }
-      setState(() {
-        showScreen = true;
-      });
 
-      Modular.to.pop();
+      // File tmpFile = File(pickedImage.path);
+      // tmpFile = await tmpFile.copy(tmpFile.path);
+
+      setState(() {
+        // if(pickedImage!.path != ''){
+        _image = File(pickedImage!.path);
+        showScreen = true;
+
+        // }else{
+          // print("DEU RUIM BRASILLL");
+          // showScreen = true;
+        // } 
+
+      });
     }
+
+    // Widget _ImageView() {
+    //   print("teste");
+    //   // print(_image.path == "");
+    //   // print(_image.uri);
+    //   // print(_image.absolute);
+
+    //   if (_image == null) {
+    //     return CircleAvatar(
+    //       radius: 80.0,
+    //       backgroundImage: NetworkImage(photoURL),
+    //     );
+    //   } else {
+    //     return CircleAvatar(
+    //       radius: 80.0,
+    //       backgroundImage: FileImage(_image!),
+    //     );
+    //   }
+    // }
+
+    // void changeUserInfo() async {
+    //   setState(() {
+    //     showScreen = false;
+    //   });
+    //   try {
+    //     if (password.text.isNotEmpty) {
+    //       try {
+    //         changePassword(userModel.password, password.text);
+    //       } catch (e) {
+    //         throw Exception("Error on Firebase");
+    //       }
+    //     }
+
+    //     if (_image!.path != "") {
+    //       changeImageProfile(_image!.path);
+    //     }
+
+    //     // ignore: prefer_typing_uninitialized_variables
+    //     var teste;
+    //     // print(widget.userData["userInfo"]["details_customer"]["customer"]
+    //     //           ["id"]);
+    //     // print(username.text);
+    //     // print(phone.text);
+    //     // print(postcode.text.isEmpty);
+    //     // print(address.text.isEmpty);
+    //     // print(widget.userData["userInfo"]["details_customer"]["customer"]
+    //     //           ["provider"]);
+    //     // return ;
+    //     try {
+    //       teste = await apiClientRepository.updateUser(
+    //           widget.userData["userInfo"]["details_customer"]["customer"]["id"]
+    //               .toString(),
+    //           username.text,
+    //           phone.text.isEmpty ? "" : phone.text.toString(),
+    //           postcode.text.isEmpty ? "" : postcode.text.toString(),
+    //           address.text.isEmpty ? "" : address.text.toString(),
+    //           receiveNotification == true ? "1" : "0",
+    //           widget.userData["userInfo"]["details_customer"]["customer"]
+    //               ["provider"]);
+    //     } catch (e) {
+    //       print(e);
+    //       throw Exception("Error on DB");
+    //     }
+    //     print(teste.data);
+    //     if (teste.data["message"] ==
+    //         "Creating default object from empty value") {
+    //       throw Exception("Error on DB");
+    //     }
+    //   } catch (e) {
+    //     print(e);
+    //     setState(() {
+    //       showScreen = true;
+    //     });
+    //     await showDialogAlert(
+    //       context: context,
+    //       title: "Message",
+    //       message:
+    //           "It was not possible complete your request. Please try again later...",
+    //       actions: [
+    //         Center(
+    //           child: MainButton(
+    //             brand: const Icon(Icons.add),
+    //             hasIcon: false,
+    //             text: "OK",
+    //             buttonColor: const Color(0xFF4f4d1f),
+    //             sizeWidth: 100.0,
+    //             onPress: () {
+    //               Navigator.popUntil(context, ModalRoute.withName('/Menu'));
+    //             },
+    //           ),
+    //         ),
+    //       ],
+    //     );
+    //   }
+    //   setState(() {
+    //     showScreen = true;
+    //   });
+
+    //   Modular.to.pop();
+    // }
 
     return Stack(
       children: [
@@ -148,6 +207,44 @@ class _ProfileFormState extends State<ProfileForm> {
               const SizedBox(
                 height: 10.0,
               ),
+              Center(
+                child: SizedBox(
+                    height: 120.0,
+                    width: 120.0,
+                    child: InkWell(
+                      onTap: getImage,
+                      child: CircleAvatar(
+                        backgroundColor: const Color(0xFF4f4d1f),
+                        radius: 55.0,
+                        child: CircleAvatar(
+                          radius: 50.0,
+                          child: Center(
+                            child: ClipOval(
+                              child:
+                                  // _ImageView()
+                                  // (_image == null)
+                                  Image.network(photoURL),
+                            ),
+                          ),
+                          backgroundColor: Colors.white,
+                        ),
+                      ),
+                    )),
+              ),
+              //     InkWell(
+              //   onTap: getImage,
+              //   child: CircleAvatar(
+              //     radius: 60.0,
+              //     child: ClipOval(
+              //       child: (_image.path == "")
+              //           ? Image.network(photoURL)
+              //           : Image.file(_image)
+              //     ),
+              //     backgroundColor: Colors.white,
+              //   ),
+              // ),
+              // GestureDetector(child: _ImageView(),onTap: getImage,),
+
               TextInput(
                 minLines: 1,
                 maxLines: 1,
@@ -369,7 +466,7 @@ class _ProfileFormState extends State<ProfileForm> {
                   onPress: () async {
                     if (_formKey.currentState!.validate()) {
                       print("Entreiiiii");
-                      changeUserInfo();
+                      // changeUserInfo();
                     }
                   },
                 ),

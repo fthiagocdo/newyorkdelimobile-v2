@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:new_york_delivery_app/app/views/Add%20Collect%20Screen/components/Form/collect_form.dart';
+import 'package:new_york_delivery_app/app/views/Delivery%20Table%20Screen/components/Form/delivary_table_form.dart';
 
-class AddCollectScreen extends StatefulWidget {
-  const AddCollectScreen({Key? key}) : super(key: key);
+class DeliveryTableScreen extends StatefulWidget {
+  const DeliveryTableScreen({Key? key}) : super(key: key);
 
   @override
-  _AddCollectScreenState createState() => _AddCollectScreenState();
+  _DeliveryTableScreenState createState() => _DeliveryTableScreenState();
 }
 
-class _AddCollectScreenState extends State<AddCollectScreen> {  
+class _DeliveryTableScreenState extends State<DeliveryTableScreen> {
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "Confirm your phone",
+          "Number of Table",
           style: TextStyle(fontFamily: "KGBrokenVesselsSketch"),
         ),
       ),
@@ -48,7 +50,7 @@ class _AddCollectScreenState extends State<AddCollectScreen> {
                         SizedBox(
                           height: 10.0,
                         ),
-                         CollectForm(),
+                         DeliveryTableForm(),
                       ],
                     ),
                   ),
