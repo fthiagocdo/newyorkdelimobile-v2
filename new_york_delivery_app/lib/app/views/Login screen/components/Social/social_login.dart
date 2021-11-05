@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:new_york_delivery_app/app/components/MainButton/main_button.dart';
 import 'package:new_york_delivery_app/app/views/Login%20screen/components/SocialButton/social_button.dart';
 
 class SocialLogin extends StatelessWidget {
@@ -15,8 +14,7 @@ class SocialLogin extends StatelessWidget {
         children: [
           Expanded(
             child: SocialButton(
-              side:"Left",
-              
+              side:"Left",              
               hasIcon: true,
               brand: const Image(
                   height: 30.0,

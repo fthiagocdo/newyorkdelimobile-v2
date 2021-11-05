@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:new_york_delivery_app/app/views/Add%20Collect%20Screen/components/Form/collect_form.dart';
 
 class AddCollectScreen extends StatefulWidget {
-  const AddCollectScreen({Key? key}) : super(key: key);
+  final Map info;
+  const AddCollectScreen({Key? key,required this.info}) : super(key: key);
 
   @override
   _AddCollectScreenState createState() => _AddCollectScreenState();

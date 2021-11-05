@@ -3,14 +3,14 @@ import 'package:new_york_delivery_app/app/views/Add%20Collect%20Screen/component
 import 'package:new_york_delivery_app/app/views/Delivery%20Table%20Screen/components/Form/delivary_table_form.dart';
 
 class DeliveryTableScreen extends StatefulWidget {
-  const DeliveryTableScreen({Key? key}) : super(key: key);
+  final Map info;
+  const DeliveryTableScreen({Key? key,required this.info}) : super(key: key);
 
   @override
   _DeliveryTableScreenState createState() => _DeliveryTableScreenState();
 }
 
 class _DeliveryTableScreenState extends State<DeliveryTableScreen> {
-
 
   @override
   Widget build(BuildContext context) {

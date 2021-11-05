@@ -25,6 +25,7 @@ class _DeliveryTableFormState extends State<DeliveryTableForm> {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _tableNumberController = TextEditingController();
   bool showScreen = true;
+  bool getDataFromDB = false;
 
   void confirmNumberTable() async {
     setState(() {
@@ -32,29 +33,141 @@ class _DeliveryTableFormState extends State<DeliveryTableForm> {
     });
     int? shopID = await getMenuTypesDeliObject();
     if (shopID != null) {
-      var result;
-      try {
-        result =
-            await repository.confirmCheckout(user.id, shopID.toString(), []);
-      } catch (e) {
-        print('Error on BD:');
-        print(e);
+      if (getDataFromDB) {
+        var result;
+        try {
+          result =
+              await repository.confirmCheckout(user.id, shopID.toString(), []);
+        } catch (e) {
+          print('Error on BD:');
+          print(e);
+          setState(() {
+            showScreen = true;
+          });
+          return showDialogAlert(
+            title: "Message",
+            message: "Sorry, We've got an Error, please try later",
+            context: context,
+            actions: [
+              Center(
+                child: MainButton(
+                  brand: const Icon(Icons.add),
+                  hasIcon: false,
+                  text: "OK",
+                  buttonColor: const Color(0xFF4f4d1f),
+                  sizeWidth: 100.0,
+                  onPress: () {
+                    Modular.to.pop();
+                  },
+                ),
+              ),
+            ],
+          );
+        }
+
+        // print(result);
+      } else {
         setState(() {
           showScreen = true;
         });
         return showDialogAlert(
           title: "Message",
-          message: "Sorry, We've got an Error, please try later",
+          message: "Save your details for next time?",
           context: context,
           actions: [
             Center(
               child: MainButton(
                 brand: const Icon(Icons.add),
                 hasIcon: false,
-                text: "OK",
+                text: "YES",
                 buttonColor: const Color(0xFF4f4d1f),
-                sizeWidth: 100.0,
-                onPress: () {
+                sizeWidth: 80.0,
+                onPress: () async {
+                  var teste;
+                  var userInfo;
+                  try {
+                    try {
+                      userInfo = await repository.getUser(
+                          user.provider, user.providerId);
+                    } catch (e) {
+                      throw Exception(e);
+                    }
+
+                    try {
+                      teste = await repository.updateUser(
+                        user.id,
+                        _nameController.text,
+                        _phoneController.text,
+                        userInfo.data['details_customer']['customer']
+                            ['postcode'],
+                        userInfo.data['details_customer']['customer']
+                            ['address'],
+                        userInfo.data['details_customer']['customer']
+                            ['receive_notifications'],
+                        user.provider,
+                      );
+                      if (teste.data['error']) {
+                        throw Exception(teste.data['message']);
+                      }
+                    } catch (e) {
+                      print(e);
+                      throw Exception('Error updating the user info');
+                    }
+
+                    try {
+                      await repository
+                          .confirmCheckout(user.id, shopID.toString(), []);
+                    } catch (e) {
+                      throw Exception('Erro confirming the checkout');
+                    }
+                  } catch (e) {
+                    print('Error on BD');
+                    print(e);
+                    setState(() {
+                      showScreen = true;
+                    });
+                    return showDialogAlert(
+                      title: "Message",
+                      message: "We had a error, please try it again later ",
+                      context: context,
+                      actions: [
+                        Center(
+                          child: MainButton(
+                            brand: const Icon(Icons.add),
+                            hasIcon: false,
+                            text: "OK",
+                            buttonColor: const Color(0xFF4f4d1f),
+                            sizeWidth: 100.0,
+                            onPress: () {
+                              Modular.to
+                                ..pop()
+                                ..pop()
+                                ..pop();
+                            },
+                          ),
+                        ),
+                      ],
+                    );
+                  }
+                  Modular.to.pop();
+                },
+              ),
+            ),
+            Center(
+              child: MainButton(
+                brand: const Icon(Icons.add),
+                hasIcon: false,
+                text: "NO",
+                buttonColor: const Color(0xFF4f4d1f),
+                sizeWidth: 80.0,
+                onPress: () async {
+                  try {
+                    await repository
+                        .confirmCheckout(user.id, shopID.toString(), []);
+                  } catch (e) {
+                    print("Error on BD");
+                    print(e);
+                  }
                   Modular.to.pop();
                 },
               ),
@@ -62,14 +175,13 @@ class _DeliveryTableFormState extends State<DeliveryTableForm> {
           ],
         );
       }
-      setState(() {
-        showScreen = true;
-      });
-      print(result);
     }
   }
 
   void showScreenData() async {
+    setState(() {
+      showScreen = false;
+    });
     var result;
     try {
       result = await repository.getUser(
@@ -82,40 +194,36 @@ class _DeliveryTableFormState extends State<DeliveryTableForm> {
         (result.data['details_customer']['customer']['phone_number'] != null &&
             result.data['details_customer']['customer']['phone_number'].length >
                 0)) {
-      print(result.data['details_customer']['customer']['phone_number'].length);
+      getDataFromDB = true;
       _nameController.text =
           result.data['details_customer']['customer']['name'];
       _phoneController.text =
           result.data['details_customer']['customer']['phone_number'];
+      setState(() {
+        showScreen = true;
+      });
+    } else if (result.data['details_customer']['customer']['name'] != null ||
+        (result.data['details_customer']['customer']['phone_number'] != null &&
+            result.data['details_customer']['customer']['phone_number'].length >
+                0)) {
+      _nameController.text =
+          result.data['details_customer']['customer']['name'];
+      _phoneController.text =
+          result.data['details_customer']['customer']['phone_number'];
+      setState(() {
+        showScreen = true;
+      });
     } else {
-      return showDialogAlert(
-        title: "Message",
-        message:
-            "Please, add your Name or phone number before order your product",
-        context: context,
-        actions: [
-          Center(
-            child: MainButton(
-              brand: const Icon(Icons.add),
-              hasIcon: false,
-              text: "OK",
-              buttonColor: const Color(0xFF4f4d1f),
-              sizeWidth: 100.0,
-              onPress: () {
-                Navigator.pushNamedAndRemoveUntil(
-                    context, '/Profile', ModalRoute.withName('/Menu-Types'));
-              },
-            ),
-          ),
-        ],
-      );
+      setState(() {
+        showScreen = true;
+      });
     }
   }
 
   @override
   void initState() {
-    showScreenData();
     super.initState();
+    showScreenData();
   }
 
   @override

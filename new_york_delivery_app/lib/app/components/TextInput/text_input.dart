@@ -9,7 +9,7 @@ class TextInput extends StatelessWidget {
       required this.label,
       required this.showContent,
       required this.cursorColor,
-      required this.suffixIcon, required this.validation, required this.controller,required this.isReadOnly, required this.minLines, required this.maxLines})
+      required this.suffixIcon, required this.validation, required this.controller,required this.isReadOnly, required this.minLines, required this.maxLines, this.hintLabel = ''})
       : super(key: key);
 
   final String? Function(String?) validation;
@@ -19,6 +19,7 @@ class TextInput extends StatelessWidget {
   final bool hasSuffixIcon;
   final bool isReadOnly;
   final String label;
+  final String hintLabel;
   final bool showContent;
   final Color cursorColor;
   final GestureDetector suffixIcon;
@@ -40,7 +41,9 @@ class TextInput extends StatelessWidget {
       keyboardType: keyboardType,
       cursorColor: cursorColor,
       decoration: InputDecoration(
+        hintText: hintLabel,
         labelText: label != ""? label: null,
+        
         labelStyle: const TextStyle(
           color: Color(0xFF4f4d1f),
         ),

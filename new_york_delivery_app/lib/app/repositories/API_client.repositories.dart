@@ -1,5 +1,4 @@
 // ignore_for_file: non_constant_identifier_names
-
 import 'package:dio/dio.dart';
 import 'package:new_york_delivery_app/app/interfaces/IAPI_client.interface.dart';
 import 'package:new_york_delivery_app/app/interfaces/IClientHttp.interface.dart';
@@ -43,7 +42,6 @@ class ApiClientRepository implements IApiClient {
       "receiveNotifications": receiveNotifications,
       "provider": provider
     });
-
     return result;
   }
 
@@ -55,19 +53,22 @@ class ApiClientRepository implements IApiClient {
 
   @override
   Future getMenuItens(String menuTypeID) async {
-    Response result = await client.get(mainURL + 'menuitem/all/$menuTypeID', {});
+    Response result =
+        await client.get(mainURL + 'menuitem/all/$menuTypeID', {});
     return result;
   }
 
   @override
   Future getMenuExtras(String menuItemID) async {
-    Response result = await client.get(mainURL + 'menuextra/all/$menuItemID', {});
+    Response result =
+        await client.get(mainURL + 'menuextra/all/$menuItemID', {});
     return result;
   }
 
   @override
   Future getMenuChoices(String menuItemID) async {
-    Response result = await client.get(mainURL + 'menuchoice/all/$menuItemID', {});
+    Response result =
+        await client.get(mainURL + 'menuchoice/all/$menuItemID', {});
     return result;
   }
 
@@ -79,40 +80,89 @@ class ApiClientRepository implements IApiClient {
 
   @override
   Future sendMessage(String name, String reply, String message) async {
-    Response result = await client.get(mainURL + 'contactus/send', {
-      "name":name, 
-      "reply":reply,
-      "message":message
-    });
+    Response result = await client.get(mainURL + 'contactus/send',
+        {"name": name, "reply": reply, "message": message});
     return result;
   }
 
   @override
-  Future getImages(String menuTypeID) async{
-   Response result = await client.get('http://www.ftcdevsolutions.com/newyorkdelidelivery/api/menuitem/image/103',{});
-   return result;
+  Future getImages(String menuTypeID) async {
+    Response result = await client.get(
+        'http://www.ftcdevsolutions.com/newyorkdelidelivery/api/menuitem/image/103',
+        {});
+    return result;
   }
 
   @override
-  Future addMenuItem(String userID, String shopID, String menuItemID, List<int> menuExtras, int menuChoice) async{
+  Future addMenuItem(String userID, String shopID, String menuItemID,
+      String menuExtras, int menuChoice) async {
+    //     print("TESTE DO ENDPOINT ADD MENU ITEM: ");
+    //     print({
+    //   "menuitem_id": menuItemID,
+    //   "menuExtras": menuExtras,
+    //   "menuChoices": menuChoice
+    // });
     // http://www.ftcdevsolutions.com/newyorkdelidelivery/api/
     // http://www.ftcdevsolutions.com/newyorkdelidelivery/api/checkout/additem/ONZHER7tLmd5wgkgqEWhQZOqfuX2/4?menuitem_id=16&menuExtras=26&menuChoices=1
-    Response result = await client.get(mainURL + 'checkout/additem/$userID/$shopID',{
-      "menuitem_id":menuItemID,
-      "menuExtras":menuExtras,
-      "menuChoices":menuChoice
+    Response result = await client.get(
+        mainURL + 'checkout/additem/$userID/$shopID', {
+      "menuitem_id": menuItemID,
+      "menuExtras": menuExtras,
+      "menuChoices": menuChoice
     });
 
     return result;
-    
+  }
+
+  @override
+  Future getCheckout(String userID, String shopID) async {
+    Response result =
+        await client.get(mainURL + 'checkout/get/$userID/$shopID', {});
+    return result;
+  }
+
+  @override
+  Future confirmCheckout(
+      String userID, String shopID, List<int> deliveryOrCollect) async {
+    Response result = await client.get(
+        mainURL + 'checkout/deliverorcollect/$userID/$shopID',
+        {"deliverorcollect": deliveryOrCollect});
+    return result;
+  }
+
+  @override
+  Future plusItemCheckout(
+      String userID, String shopID, String checkoutItemID) async {
+    Response result = await client.get(
+        mainURL + 'checkout/plusitem/$userID/$shopID/$checkoutItemID', {});
+    return result;
+  }
+
+  @override
+  Future minusItemCheckout(
+      String userID, String shopID, String checkoutItemID) async {
+    Response result = await client.get(
+        mainURL + 'checkout/minusitem/$userID/$shopID/$checkoutItemID', {});
+    return result;
+  }
+
+  @override
+  Future plusTipCheckout(String userID, String shopID) async {
+      Response result = await client.get(
+        mainURL + 'checkout/plusridertip/$userID/$shopID', {});
+    return result;
   }
   @override
-  Future confirmCheckout(String userID,String shopID, List<int> deliveryOrCollect) async {
-    Response result = await client.get(mainURL + '/checkout/deliverorcollect/$userID/$shopID',{
-      "deliverorcollect":deliveryOrCollect
-    });
+  Future minusTipCheckout(String userID, String shopID) async {
+     Response result = await client.get(
+        mainURL + 'checkout/minusridertip/$userID/$shopID', {});
     return result;
   }
-
- 
+  @override
+  Future deleteItemCheckout(
+      String userID, String shopID, String checkoutItemID) async {
+        Response result = await client.get(
+        mainURL + 'checkout/removeitem/$userID/$shopID/$checkoutItemID', {});
+    return result;
+      }
 }

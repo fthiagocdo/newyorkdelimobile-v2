@@ -98,7 +98,7 @@ class ProfileScreenState extends State<ProfileScreen> {
             child: GestureDetector(
               child: const Icon(Icons.shopping_cart_outlined),
               onTap: () {
-                
+                Modular.to.pushNamed("/Checkout");
               },
             ),
           ),

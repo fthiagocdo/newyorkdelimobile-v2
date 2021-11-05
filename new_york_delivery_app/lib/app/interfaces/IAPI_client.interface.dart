@@ -11,6 +11,12 @@ abstract class IApiClient{
   Future listShops(bool openedShops);
   Future sendMessage(String name, String reply, String message);
   Future getImages(String menuTypeID);
-  Future addMenuItem(String userID, String shopID, String menuItemID, List<int> menuExtras, int menuChoice);
+  Future addMenuItem(String userID, String shopID, String menuItemID, String menuExtras, int menuChoice);
+  Future getCheckout(String userID,String shopID);
   Future confirmCheckout(String userID,String shopID, List<int> deliveryOrCollect);
+  Future plusItemCheckout(String userID,String shopID, String checkoutItemID);
+  Future minusItemCheckout(String userID,String shopID, String checkoutItemID);
+  Future plusTipCheckout(String userID,String shopID);
+  Future minusTipCheckout(String userID,String shopID);
+  Future deleteItemCheckout(String userID,String shopID, String checkoutItemID);
 }

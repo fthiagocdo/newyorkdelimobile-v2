@@ -37,6 +37,7 @@ class _ProfileFormState extends State<ProfileForm> {
 
   @override
   void initState() {
+    // print(widget.userData["userInfo"]["details_customer"]["customer"]);
     username.text = widget.userData["userInfo"]["details_customer"]["customer"]
             ["name"] ??
         "";
@@ -116,86 +117,86 @@ class _ProfileFormState extends State<ProfileForm> {
     //   }
     // }
 
-    // void changeUserInfo() async {
-    //   setState(() {
-    //     showScreen = false;
-    //   });
-    //   try {
-    //     if (password.text.isNotEmpty) {
-    //       try {
-    //         changePassword(userModel.password, password.text);
-    //       } catch (e) {
-    //         throw Exception("Error on Firebase");
-    //       }
-    //     }
+    void changeUserInfo() async {
+      setState(() {
+        showScreen = false;
+      });
+      try {
+        if (password.text.isNotEmpty) {
+          try {
+            changePassword(userModel.password, password.text);
+          } catch (e) {
+            throw Exception("Error on Firebase");
+          }
+        }
 
-    //     if (_image!.path != "") {
-    //       changeImageProfile(_image!.path);
-    //     }
+        // if (_image!.path != "") {
+        //   changeImageProfile(_image!.path);
+        // }
 
-    //     // ignore: prefer_typing_uninitialized_variables
-    //     var teste;
-    //     // print(widget.userData["userInfo"]["details_customer"]["customer"]
-    //     //           ["id"]);
-    //     // print(username.text);
-    //     // print(phone.text);
-    //     // print(postcode.text.isEmpty);
-    //     // print(address.text.isEmpty);
-    //     // print(widget.userData["userInfo"]["details_customer"]["customer"]
-    //     //           ["provider"]);
-    //     // return ;
-    //     try {
-    //       teste = await apiClientRepository.updateUser(
-    //           widget.userData["userInfo"]["details_customer"]["customer"]["id"]
-    //               .toString(),
-    //           username.text,
-    //           phone.text.isEmpty ? "" : phone.text.toString(),
-    //           postcode.text.isEmpty ? "" : postcode.text.toString(),
-    //           address.text.isEmpty ? "" : address.text.toString(),
-    //           receiveNotification == true ? "1" : "0",
-    //           widget.userData["userInfo"]["details_customer"]["customer"]
-    //               ["provider"]);
-    //     } catch (e) {
-    //       print(e);
-    //       throw Exception("Error on DB");
-    //     }
-    //     print(teste.data);
-    //     if (teste.data["message"] ==
-    //         "Creating default object from empty value") {
-    //       throw Exception("Error on DB");
-    //     }
-    //   } catch (e) {
-    //     print(e);
-    //     setState(() {
-    //       showScreen = true;
-    //     });
-    //     await showDialogAlert(
-    //       context: context,
-    //       title: "Message",
-    //       message:
-    //           "It was not possible complete your request. Please try again later...",
-    //       actions: [
-    //         Center(
-    //           child: MainButton(
-    //             brand: const Icon(Icons.add),
-    //             hasIcon: false,
-    //             text: "OK",
-    //             buttonColor: const Color(0xFF4f4d1f),
-    //             sizeWidth: 100.0,
-    //             onPress: () {
-    //               Navigator.popUntil(context, ModalRoute.withName('/Menu'));
-    //             },
-    //           ),
-    //         ),
-    //       ],
-    //     );
-    //   }
-    //   setState(() {
-    //     showScreen = true;
-    //   });
+        // ignore: prefer_typing_uninitialized_variables
+        var teste;
+        // print(widget.userData["userInfo"]["details_customer"]["customer"]
+        //           ["id"]);
+        print(username.text);
+        print(phone.text);
+        print(postcode.text.isEmpty);
+        print(address.text.isEmpty);
+        print(widget.userData["userInfo"]["details_customer"]["customer"]
+                  ["provider"]);
+        // return ;
+        try {
+          teste = await apiClientRepository.updateUser(
+              widget.userData["userInfo"]["details_customer"]["customer"]["id"]
+                  .toString(),
+              username.text,
+              phone.text.isEmpty ? "" : phone.text.toString(),
+              postcode.text.isEmpty ? "" : postcode.text.toString(),
+              address.text.isEmpty ? "" : address.text.toString(),
+              receiveNotification == true ? "1" : "0",
+              widget.userData["userInfo"]["details_customer"]["customer"]
+                  ["provider"]);
+        } catch (e) {
+          print(e);
+          throw Exception("Error on DB");
+        }
+        print(teste.data);
+        if (teste.data["message"] ==
+            "Creating default object from empty value") {
+          throw Exception("Error on DB");
+        }
+      } catch (e) {
+        print(e);
+        setState(() {
+          showScreen = true;
+        });
+        await showDialogAlert(
+          context: context,
+          title: "Message",
+          message:
+              "It was not possible complete your request. Please try again later...",
+          actions: [
+            Center(
+              child: MainButton(
+                brand: const Icon(Icons.add),
+                hasIcon: false,
+                text: "OK",
+                buttonColor: const Color(0xFF4f4d1f),
+                sizeWidth: 100.0,
+                onPress: () {
+                  Navigator.popUntil(context, ModalRoute.withName('/Menu'));
+                },
+              ),
+            ),
+          ],
+        );
+      }
+      setState(() {
+        showScreen = true;
+      });
 
-    //   Modular.to.pop();
-    // }
+      Modular.to.pop();
+    }
 
     return Stack(
       children: [
@@ -466,7 +467,7 @@ class _ProfileFormState extends State<ProfileForm> {
                   onPress: () async {
                     if (_formKey.currentState!.validate()) {
                       print("Entreiiiii");
-                      // changeUserInfo();
+                      changeUserInfo();
                     }
                   },
                 ),

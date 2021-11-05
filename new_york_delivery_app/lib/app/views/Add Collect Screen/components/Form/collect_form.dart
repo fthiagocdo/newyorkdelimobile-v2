@@ -21,6 +21,7 @@ class CollectForm extends StatefulWidget {
 
 class _CollectFormState extends State<CollectForm> {
   bool showScreen = true;
+  bool getDataFromDB = false;
   final _formKey = GlobalKey<FormState>();
   final ApiClientRepository repository = Modular.get<ApiClientRepository>();
   final UserModel user = Modular.get<UserModel>();
@@ -30,25 +31,209 @@ class _CollectFormState extends State<CollectForm> {
   DateTime selectedDate = DateTime.now();
 
   void confirmCollect() async {
-    print("entrou");
-    print(selectedDate);
-    
-    return;
+    setState(() {
+      showScreen = false;
+    });
     int? shopID = await getMenuTypesDeliObject();
-    if (shopID != null) {
-      var result;
-      try {
-        result =
-            await repository.confirmCheckout(user.id, shopID.toString(), []);
-      } catch (e) {
-        print('Error on BD:');
-        print(e);
+    if (getDataFromDB) {
+      if (shopID != null) {
+        var result;
+        try {
+          result =
+              await repository.confirmCheckout(user.id, shopID.toString(), []);
+        } catch (e) {
+          print('Error on BD:');
+          print(e);
+          return showDialogAlert(
+            title: "Message",
+            message: "We had a error, please try it again later ",
+            context: context,
+            actions: [
+              Center(
+                child: MainButton(
+                  brand: const Icon(Icons.add),
+                  hasIcon: false,
+                  text: "OK",
+                  buttonColor: const Color(0xFF4f4d1f),
+                  sizeWidth: 100.0,
+                  onPress: () {
+                    Modular.to.pop();
+                  },
+                ),
+              ),
+            ],
+          );
+        }
+        print(result);
+        setState(() {
+          showScreen = true;
+        });
+
+        // ! go to next screen or call function
+
+      } else {
+        setState(() {
+          showScreen = true;
+        });
+        return showDialogAlert(
+          title: "Message",
+          message: "We had a error, please try it again later ",
+          context: context,
+          actions: [
+            Center(
+              child: MainButton(
+                brand: const Icon(Icons.add),
+                hasIcon: false,
+                text: "OK",
+                buttonColor: const Color(0xFF4f4d1f),
+                sizeWidth: 100.0,
+                onPress: () {
+                  Modular.to.pop();
+                },
+              ),
+            ),
+          ],
+        );
       }
-      print(result);
+    } else {
+      return showDialogAlert(
+        title: "Message",
+        message: "Save your details for next time?",
+        context: context,
+        actions: [
+          MainButton(
+            brand: const Icon(Icons.add),
+            hasIcon: false,
+            text: "YES",
+            buttonColor: const Color(0xFF4f4d1f),
+            sizeWidth: 80.0,
+            onPress: () async {
+              var teste;
+              var userInfo;
+              try {
+                try {
+                  userInfo =
+                      await repository.getUser(user.provider, user.providerId);
+                } catch (e) {
+                  throw Exception(e);
+                }
+                
+                try {
+                  teste = await repository.updateUser(
+                    user.id,
+                    _nameController.text,
+                    _phoneController.text,
+                    userInfo.data['details_customer']['customer']['postcode'],
+                    userInfo.data['details_customer']['customer']['address'],
+                    userInfo.data['details_customer']['customer']['receive_notifications'],
+                    user.provider,
+                  );
+                  if (teste.data['error']) {
+                    throw Exception(teste.data['message']);
+                  }
+                } catch (e) {
+                  print(e);
+                  throw Exception('Error updating the user info');
+                }
+
+                try {
+                  await repository
+                      .confirmCheckout(user.id, shopID.toString(), []);
+                } catch (e) {
+                  throw Exception('Erro confirming the checkout');
+                }
+              } catch (e) {
+                print('Error on BD');
+                print(e);
+                setState(() {
+                  showScreen = true;
+                });
+                return showDialogAlert(
+                  title: "Message",
+                  message: "We had a error, please try it again later ",
+                  context: context,
+                  actions: [
+                    Center(
+                      child: MainButton(
+                        brand: const Icon(Icons.add),
+                        hasIcon: false,
+                        text: "OK",
+                        buttonColor: const Color(0xFF4f4d1f),
+                        sizeWidth: 100.0,
+                        onPress: () {
+                          Modular.to
+                            ..pop()
+                            ..pop()
+                            ..pop();
+                        },
+                      ),
+                    ),
+                  ],
+                );
+              }
+
+              setState(() {
+                showScreen = true;
+              });
+              print("DEU BOM NEGRADA");
+              print(teste.data);
+              Modular.to.pop();
+            },
+          ),
+          MainButton(
+            brand: const Icon(Icons.add),
+            hasIcon: false,
+            text: "NO",
+            buttonColor: const Color(0xFF4f4d1f),
+            sizeWidth: 80.0,
+            onPress: () async {
+              int? shopID = await getMenuTypesDeliObject();
+              if (shopID != null) {
+                var result;
+                try {
+                  result = await repository
+                      .confirmCheckout(user.id, shopID.toString(), []);
+                } catch (e) {
+                  print('Error on BD:');
+                  print(e);
+                  return showDialogAlert(
+                    title: "Message",
+                    message: "We had a error, please try it again later ",
+                    context: context,
+                    actions: [
+                      Center(
+                        child: MainButton(
+                          brand: const Icon(Icons.add),
+                          hasIcon: false,
+                          text: "OK",
+                          buttonColor: const Color(0xFF4f4d1f),
+                          sizeWidth: 100.0,
+                          onPress: () {
+                            Modular.to.pop();
+                          },
+                        ),
+                      ),
+                    ],
+                  );
+                }
+                print(result);
+                setState(() {
+                  showScreen = true;
+                });
+                Modular.to.pop();
+                // ! go to next screen or call function
+              }
+            },
+          ),
+        ],
+      );
     }
   }
 
   void showScreenData() async {
+    setState(() {
+      showScreen = false;
+    });
     var result;
     try {
       result = await repository.getUser(
@@ -61,40 +246,39 @@ class _CollectFormState extends State<CollectForm> {
         (result.data['details_customer']['customer']['phone_number'] != null &&
             result.data['details_customer']['customer']['phone_number'].length >
                 0)) {
-      print(result.data['details_customer']['customer']['phone_number'].length);
+      getDataFromDB = true;
+      // print(result.data['details_customer']['customer']['phone_number'].length);
       _nameController.text =
           result.data['details_customer']['customer']['name'];
       _phoneController.text =
           result.data['details_customer']['customer']['phone_number'];
+      setState(() {
+        showScreen = true;
+      });
+    } else if (result.data['details_customer']['customer']['name'] != null ||
+        (result.data['details_customer']['customer']['phone_number'] != null &&
+            result.data['details_customer']['customer']['phone_number'].length >
+                0)) {
+      _nameController.text =
+          result.data['details_customer']['customer']['name'];
+      _phoneController.text =
+          result.data['details_customer']['customer']['phone_number'];
+      setState(() {
+        showScreen = true;
+      });
     } else {
-      return showDialogAlert(
-        title: "Message",
-        message:
-            "Please, add your Name or phone number before order your product",
-        context: context,
-        actions: [
-          Center(
-            child: MainButton(
-              brand: const Icon(Icons.add),
-              hasIcon: false,
-              text: "OK",
-              buttonColor: const Color(0xFF4f4d1f),
-              sizeWidth: 100.0,
-              onPress: () {
-                Navigator.pushNamedAndRemoveUntil(
-                    context, '/Profile', ModalRoute.withName('/Menu-Types'));
-              },
-            ),
-          ),
-        ],
-      );
+      _nameController.text = "";
+      _phoneController.text = "";
+      setState(() {
+        showScreen = true;
+      });
     }
   }
 
   @override
   void initState() {
-    showScreenData();
     super.initState();
+    showScreenData();
   }
 
   @override
@@ -151,12 +335,11 @@ class _CollectFormState extends State<CollectForm> {
               const SizedBox(
                 height: 10.0,
               ),
-              // Center(child: Platform.isIOS ? iOSPicker() : androidDropdown(),)
               DateTimePicker(
                 type: DateTimePickerType.time,
 
                 initialValue:
-                    '${selectedDate.hour}:${'${selectedDate.minute}'.length == 1 ?  '0${selectedDate.minute}': '${selectedDate.minute}'}',
+                    '${selectedDate.hour}:${'${selectedDate.minute}'.length == 1 ? '0${selectedDate.minute}' : '${selectedDate.minute}'}',
                 // firstDate: DateTime.now(),
                 // lastDate: DateTime(2100),
                 // icon: const Icon(Icons.event),
@@ -171,7 +354,7 @@ class _CollectFormState extends State<CollectForm> {
                 //   var dt = DateTime(
                 //       now.year, now.month, now.day, teste.hour, teste.minute);
                 //   if (dt.compareTo(DateTime.now().add(const Duration(minutes: 5))) < 0) {
-                //     // return "Field 'time to collect' must be filled.";
+                // return "Field 'time to collect' must be filled.";
                 //     return "Field 'time to collect' must be above ${DateTime.now().hour} : ${'${DateTime.now().add(const Duration(minutes: 5)).minute}'.length == 1 ?  '0${DateTime.now().add(const Duration(minutes: 5)).minute}': '${DateTime.now().add(const Duration(minutes: 5)).minute}'}";
                 //   }
                 //   return null;
@@ -184,23 +367,21 @@ class _CollectFormState extends State<CollectForm> {
                   final now = DateTime.now();
                   var dt = DateTime(
                       now.year, now.month, now.day, teste.hour, teste.minute);
-                      selectedDate = dt;
+                  selectedDate = dt;
                 },
                 onSaved: (val) {
                   String hour = val!.split(":")[0];
                   String minutes = val.split(":")[1];
 
-                 
                   TimeOfDay teste = TimeOfDay(
                       hour: int.parse(hour), minute: int.parse(minutes));
                   final now = DateTime.now();
                   var dt = DateTime(
                       now.year, now.month, now.day, teste.hour, teste.minute);
-                      print(dt.toIso8601String());
-                      selectedDate = dt;
+                  print(dt.toIso8601String());
+                  selectedDate = dt;
                 },
               ),
-
               const SizedBox(
                 height: 30.0,
               ),

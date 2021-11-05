@@ -14,7 +14,6 @@ class Menu extends StatefulWidget {
 
 class _MenuState extends State<Menu> {
   Future<Map> getMenu() async {
-    
     User? user = await initializeFirebaseLogin();
 
     if (user != null) {
@@ -163,15 +162,15 @@ class _MenuState extends State<Menu> {
                         ),
                         snapshot.data?["name"] == ""
                             ? Padding(
-                              padding: const EdgeInsets.only(top:5.0),
-                              child: Text(
+                                padding: const EdgeInsets.only(top: 5.0),
+                                child: Text(
                                   snapshot.data!["email"],
                                   style: const TextStyle(
                                       fontSize: 16.0,
                                       color: Colors.white,
                                       fontWeight: FontWeight.w800),
                                 ),
-                            )
+                              )
                             : Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -216,7 +215,7 @@ class _MenuState extends State<Menu> {
                   },
                 ),
                 ListTile(
-                  leading: const Icon(Icons.menu,color: Color(0xFF4f4d1f)),
+                  leading: const Icon(Icons.menu, color: Color(0xFF4f4d1f)),
                   title: const Text('Menu',
                       style: TextStyle(color: Color(0xFF4f4d1f))),
                   onTap: () {
@@ -244,9 +243,7 @@ class _MenuState extends State<Menu> {
                       color: Color(0xFF4f4d1f)),
                   title: const Text('Order History',
                       style: TextStyle(color: Color(0xFF4f4d1f))),
-                  onTap: () {
-                    Modular.to.pushNamed("/Collect");
-                  },
+                  onTap: () {},
                 ),
                 ListTile(
                   leading: const Icon(Icons.shopping_cart_outlined,
@@ -254,7 +251,7 @@ class _MenuState extends State<Menu> {
                   title: const Text('Checkout',
                       style: TextStyle(color: Color(0xFF4f4d1f))),
                   onTap: () {
-                    Modular.to.pushNamed("/Delivery-table");
+                    Modular.to.pushNamed("/Checkout");
                   },
                 ),
                 ListTile(
@@ -262,8 +259,9 @@ class _MenuState extends State<Menu> {
                   title: const Text('Log out',
                       style: TextStyle(color: Color(0xFF4f4d1f))),
                   onTap: () async {
-                    SharedPreferences prefs = await SharedPreferences.getInstance();
-                    await prefs.setInt('menuTypes',-1);
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    await prefs.setInt('menuTypes', -1);
                     userModel.id = "";
                     userModel.provider = "";
                     userModel.providerId = "";

@@ -8,12 +8,13 @@ class NewWorkDeliApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: const Color(0xFF4f4d1f),
         appBarTheme: const AppBarTheme(color: Color(0xFF4f4d1f))   
       ),
       title: "New Work Deli",
-      initialRoute: "/Login",
+      initialRoute: "/SplashScreen",
     ).modular();
   }
 }

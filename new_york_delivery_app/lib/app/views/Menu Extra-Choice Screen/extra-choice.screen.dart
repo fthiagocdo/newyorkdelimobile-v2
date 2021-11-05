@@ -27,11 +27,11 @@ class _ExtraChoiceScreenState extends State<ExtraChoiceScreen> {
   List checkboxChoiceData = [];
   bool showScreen = true;
 
-  List<int> extrasMenu = [];
+  List<String> extrasMenu = [];
   int choicesMenu = 0;
 
   void addExtra(int newExtra) {
-    extrasMenu.add(newExtra);
+    extrasMenu.add(newExtra.toString());
   }
 
   @override
@@ -54,21 +54,15 @@ class _ExtraChoiceScreenState extends State<ExtraChoiceScreen> {
   Future<void> sendOrder() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int? shopID = prefs.getInt('menuTypes');
-
+    String extrasMenuInfo = '';
     var result;
-    print("\n");
-    print(shopID);
-    // print(extrasMenu);
-    // print(choicesMenu);
-    // print(userModel.id);
-    // print(checkboxExtrasData[0]['data']['menuitem_id']);
-
+    extrasMenuInfo = extrasMenu.map((i) => i.toString()).join(",");
     try {
       result = await repository.addMenuItem(
         userModel.id,
         shopID.toString(),
         checkboxExtrasData[0]['data']['menuitem_id'],
-        extrasMenu,
+        extrasMenuInfo,
         choicesMenu,
       );
     } catch (e) {
@@ -87,9 +81,14 @@ class _ExtraChoiceScreenState extends State<ExtraChoiceScreen> {
           style: TextStyle(fontFamily: "KGBrokenVesselsSketch"),
         ),
         actions: [
-          Container(
-            margin: const EdgeInsets.only(right: 10.0),
-            child: const Icon(Icons.shopping_cart_outlined),
+          GestureDetector(
+            child: Container(
+              margin: const EdgeInsets.only(right: 10.0),
+              child: const Icon(Icons.shopping_cart_outlined),
+            ),
+            onTap: () {
+              Modular.to.pushNamed("/Checkout");
+            },
           )
         ],
       ),
@@ -255,13 +254,35 @@ class _ExtraChoiceScreenState extends State<ExtraChoiceScreen> {
                           User? user = await initializeFirebaseLogin();
                           print(user);
                           if (user == null) {
-                            Navigator.pushNamedAndRemoveUntil(context, '/Login',
-                                ModalRoute.withName('/Login'));
-                            return;
+                            return showDialogAlert(
+                              title: "Message",
+                              message:
+                                  "You have to Login to buy it, please login",
+                              context: context,
+                              actions: [
+                                Center(
+                                  child: MainButton(
+                                    brand: const Icon(Icons.add),
+                                    hasIcon: false,
+                                    text: "OK",
+                                    buttonColor: const Color(0xFF4f4d1f),
+                                    sizeWidth: 80.0,
+                                    onPress: () async {
+                                      Navigator.pushNamedAndRemoveUntil(
+                                          context,
+                                          '/Login',
+                                          ModalRoute.withName('/Login'));
+                                    },
+                                  ),
+                                ),
+                              ],
+                            );
                           }
                           setState(() {
                             showScreen = true;
                           });
+                          await sendOrder();
+
                           return showDialogAlert(
                               title: "Message",
                               message:
@@ -279,10 +300,10 @@ class _ExtraChoiceScreenState extends State<ExtraChoiceScreen> {
                                   sizeWidth: 80.0,
                                   onPress: () {
                                     Modular.to.pop();
-                                    // Navigator.pushNamedAndRemoveUntil(
-                                    //     context,
-                                    //     '/Checkout',
-                                    //     ModalRoute.withName('/Menu-Types'));
+                                    Navigator.pushNamedAndRemoveUntil(
+                                        context,
+                                        '/Checkout',
+                                        ModalRoute.withName('/Menu-Types'));
                                   },
                                 ),
                                 const SizedBox(
@@ -294,8 +315,7 @@ class _ExtraChoiceScreenState extends State<ExtraChoiceScreen> {
                                   text: "Buy More",
                                   buttonColor: const Color(0xFF4f4d1f),
                                   sizeWidth: 80.0,
-                                  onPress: () async{
-                                    await sendOrder();
+                                  onPress: () async {
                                     Navigator.pushNamedAndRemoveUntil(
                                         context,
                                         '/Menu-Types',

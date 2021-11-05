@@ -1,7 +1,4 @@
-// ignore_for_file: avoid_print
 import 'dart:ui';
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:new_york_delivery_app/app/components/MainButton/main_button.dart';
@@ -42,14 +39,13 @@ class _FormState extends State<FormLogin> {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setBool('keepLogged', keepLogged);
 
-      
       var user = await signInUsingEmailPassword(
         email: _emailController.text,
         password: _passwordController.text,
         context: context,
       );
       print(user['data']);
-      
+
       if (user['data'] != null) {
         if (!user['data'].emailVerified) {
           setState(() {
@@ -133,9 +129,8 @@ class _FormState extends State<FormLogin> {
           print("TESTE");
           print(user);
           print(user['data'].uid);
-          
-          result = await _clientRepository.getUser(
-              "email", user['data'].uid);
+
+          result = await _clientRepository.getUser("email", user['data'].uid);
         } catch (e) {
           // ignore: avoid_print
           setState(() {
@@ -163,7 +158,8 @@ class _FormState extends State<FormLogin> {
           );
         }
         print(result.data);
-        userModel.id = result.data['details_customer']['customer']['id'].toString();
+        userModel.id =
+            result.data['details_customer']['customer']['id'].toString();
         userModel.provider =
             result.data['details_customer']['customer']['provider'];
         userModel.providerId =
@@ -171,13 +167,15 @@ class _FormState extends State<FormLogin> {
         userModel.password = _passwordController.text;
       } else {
         print("TESTANDO");
-      print(user);
+        print(user);
         setState(() {
           showScreen = true;
         });
         return showDialogAlert(
           title: "Message",
-          message: '${user['message']}'.isEmpty ? "Error, please try later" : '${user['message']}',
+          message: '${user['message']}'.isEmpty
+              ? "Error, please try later"
+              : '${user['message']}',
           context: context,
           actions: [
             MainButton(
@@ -240,14 +238,20 @@ class _FormState extends State<FormLogin> {
         try {
           result = await _clientRepository.findOrCreateUser(
               user.user!.email.toString(), user.user!.uid, "google");
-          // var teste = await _clientRepository.updateUser(
-          //     '${result.data['details_customer']['customer']['id']}',
-          //     user.additionalUserInfo.profile["name"],
-          //     "",
-          //     "",
-          //     "",
-          //     "1",
-          //     "google");
+          print('\n');
+          print(result.data['details_customer']['message']);
+          print('\n');
+          print('\n');
+          if (result.data['details_customer']['message'] != 'Customer found.') {
+            var teste = await _clientRepository.updateUser(
+                '${result.data['details_customer']['customer']['id']}',
+                user.additionalUserInfo.profile["name"],
+                "",
+                "",
+                "",
+                "1",
+                "google");
+          }
         } catch (e) {
           print("Error on DB, please try later");
           print(e);
@@ -259,13 +263,14 @@ class _FormState extends State<FormLogin> {
           showScreen = true;
         });
         // print("Google");
-        userModel.id = result.data['details_customer']['customer']['id'].toString();
+        userModel.id =
+            result.data['details_customer']['customer']['id'].toString();
         userModel.provider =
             result.data['details_customer']['customer']['provider'];
         userModel.providerId =
             result.data['details_customer']['customer']['provider_id'];
         userModel.password = "";
-        Modular.to.navigate("Choose-Deli");
+        Modular.to.navigate("Menu-Types");
       } else {
         setState(() {
           showScreen = true;
@@ -357,14 +362,14 @@ class _FormState extends State<FormLogin> {
               user.user.uid,
               "facebook");
           // ! We must change the user data on the DB, using facebook's info
-          // teste = await _clientRepository.updateUser(
-          //     '${result.data['details_customer']['customer']['id']}',
-          //     user.additionalUserInfo.profile["name"],
-          //     user.user.phoneNumber ?? "",
-          //     "",
-          //     "",
-          //     "1",
-          //     "facebook");
+          teste = await _clientRepository.updateUser(
+              '${result.data['details_customer']['customer']['id']}',
+              user.additionalUserInfo.profile["name"],
+              user.user.phoneNumber ?? "",
+              "",
+              "",
+              "1",
+              "facebook");
         } catch (e) {
           print("Error on DB, please try later");
           print(e);
@@ -376,14 +381,15 @@ class _FormState extends State<FormLogin> {
           showScreen = true;
         });
         print(result.data);
-        
-        userModel.id = result.data['details_customer']['customer']['id'].toString();
+
+        userModel.id =
+            result.data['details_customer']['customer']['id'].toString();
         userModel.provider =
             result.data['details_customer']['customer']['provider'];
         userModel.providerId =
             result.data['details_customer']['customer']['provider_id'];
         userModel.password = "";
-        Modular.to.navigate("Choose-Deli");
+        Modular.to.navigate("Menu-Types");
       } else {
         setState(() {
           showScreen = true;
