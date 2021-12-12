@@ -20,7 +20,7 @@ class _MenuTypesScreenState extends State<MenuTypesScreen> {
     int? menuTypes = await getMenuTypesDeliObject();
     print("Entrou Aqui");
     print(menuTypes);
-    if (menuTypes! > 0 ) {
+    if (menuTypes! > 0) {
       var result = await repository.getMenuTypes(menuTypes.toString());
       // print(jsonDecode(result.toString()));
       return jsonDecode(result.toString())['list'];
@@ -41,20 +41,20 @@ class _MenuTypesScreenState extends State<MenuTypesScreen> {
       ),
       drawer: const Menu(),
       body: SafeArea(
-        child: FutureBuilder<List>(
-          future: getMenuTypesDeli(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              return Container(
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(
-                      "assets/images/background.png",
-                    ),
-                    fit: BoxFit.fill,
-                  ),
-                ),
-                child: ListView.builder(
+        child: Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(
+                "assets/images/background.png",
+              ),
+              fit: BoxFit.fill,
+            ),
+          ),
+          child: FutureBuilder<List>(
+            future: getMenuTypesDeli(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return ListView.builder(
                   itemCount: snapshot.data!.length,
                   itemBuilder: (context, index) {
                     return MenuTypesItem(
@@ -65,14 +65,14 @@ class _MenuTypesScreenState extends State<MenuTypesScreen> {
                       },
                     );
                   },
-                ),
-              );
-            } else {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-          },
+                );
+              } else {
+                return const Center(
+                  child: CircularProgressIndicator(color: Color(0xFF4f4d1f)),
+                );
+              }
+            },
+          ),
         ),
       ),
     );

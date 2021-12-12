@@ -26,6 +26,8 @@ class _DeliveryTableFormState extends State<DeliveryTableForm> {
   final TextEditingController _tableNumberController = TextEditingController();
   bool showScreen = true;
   bool getDataFromDB = false;
+  String originalName = "";
+  String originalNumber = "";
 
   void confirmNumberTable() async {
     setState(() {
@@ -33,7 +35,9 @@ class _DeliveryTableFormState extends State<DeliveryTableForm> {
     });
     int? shopID = await getMenuTypesDeliObject();
     if (shopID != null) {
-      if (getDataFromDB) {
+      if (getDataFromDB &&
+          (originalName == _nameController.text) &&
+          (originalNumber == _phoneController.text)) {
         var result;
         try {
           result =
@@ -65,7 +69,29 @@ class _DeliveryTableFormState extends State<DeliveryTableForm> {
           );
         }
 
-        // print(result);
+        setState(() {
+          showScreen = true;
+        });
+        return showDialogAlert(
+          title: "Message",
+          message: "We receive your order",
+          context: context,
+          actions: [
+            Center(
+              child: MainButton(
+                brand: const Icon(Icons.add),
+                hasIcon: false,
+                text: "OK",
+                buttonColor: const Color(0xFF4f4d1f),
+                sizeWidth: 100.0,
+                onPress: () {
+                  Modular.to.pushNamedAndRemoveUntil('/Menu-Types',
+                      ModalRoute.withName('/Menu-Choice-Extras'));
+                },
+              ),
+            ),
+          ],
+        );
       } else {
         setState(() {
           showScreen = true;
@@ -149,7 +175,27 @@ class _DeliveryTableFormState extends State<DeliveryTableForm> {
                       ],
                     );
                   }
-                  Modular.to.pop();
+                  // Modular.to.pop();
+                  return showDialogAlert(
+                    title: "Message",
+                    message: "We receive your order",
+                    context: context,
+                    actions: [
+                      Center(
+                        child: MainButton(
+                          brand: const Icon(Icons.add),
+                          hasIcon: false,
+                          text: "OK",
+                          buttonColor: const Color(0xFF4f4d1f),
+                          sizeWidth: 100.0,
+                          onPress: () {
+                            Modular.to.pushNamedAndRemoveUntil('/Menu-Types',
+                                ModalRoute.withName('/Menu-Choice-Extras'));
+                          },
+                        ),
+                      ),
+                    ],
+                  );
                 },
               ),
             ),
@@ -168,7 +214,27 @@ class _DeliveryTableFormState extends State<DeliveryTableForm> {
                     print("Error on BD");
                     print(e);
                   }
-                  Modular.to.pop();
+                  // Modular.to.pop();
+                  return showDialogAlert(
+                    title: "Message",
+                    message: "We receive your order",
+                    context: context,
+                    actions: [
+                      Center(
+                        child: MainButton(
+                          brand: const Icon(Icons.add),
+                          hasIcon: false,
+                          text: "OK",
+                          buttonColor: const Color(0xFF4f4d1f),
+                          sizeWidth: 100.0,
+                          onPress: () {
+                            Modular.to.pushNamedAndRemoveUntil('/Menu-Types',
+                                ModalRoute.withName('/Menu-Choice-Extras'));
+                          },
+                        ),
+                      ),
+                    ],
+                  );
                 },
               ),
             ),
@@ -198,6 +264,9 @@ class _DeliveryTableFormState extends State<DeliveryTableForm> {
       _nameController.text =
           result.data['details_customer']['customer']['name'];
       _phoneController.text =
+          result.data['details_customer']['customer']['phone_number'];
+      originalName = result.data['details_customer']['customer']['name'];
+      originalNumber =
           result.data['details_customer']['customer']['phone_number'];
       setState(() {
         showScreen = true;

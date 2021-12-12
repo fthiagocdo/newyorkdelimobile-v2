@@ -28,10 +28,7 @@ class ProfileScreenState extends State<ProfileScreen> {
   //   "phone":"123-1234",
   //   "address":"Rua ASD 123"
   // };
-  Map data = {
-    "firebaseInfo":{},
-    "userInfo":{}
-  };
+  Map data = {"firebaseInfo": {}, "userInfo": {}};
   @override
   Widget build(BuildContext context) {
     Future<void> erroAlert() {
@@ -58,7 +55,6 @@ class ProfileScreenState extends State<ProfileScreen> {
     }
 
     Future<bool> showProfileScreen() async {
-      
       User? user;
       try {
         user = await initializeFirebaseLogin();
@@ -67,16 +63,13 @@ class ProfileScreenState extends State<ProfileScreen> {
         print(
             "We had some problems with firebase connection, please try later");
         erroAlert();
-
       }
       if (user != null) {
         // ignore: prefer_typing_uninitialized_variables
         data["firebaseInfo"] = user;
         var result;
         try {
-           result = await apiClientRepository.getUser(
-              "email", user.uid);
-          
+          result = await apiClientRepository.getUser("email", user.uid);
         } catch (e) {
           print(e);
           print(
@@ -110,23 +103,23 @@ class ProfileScreenState extends State<ProfileScreen> {
       ),
       drawer: const Menu(),
       body: SafeArea(
-        child: FutureBuilder(
-          future: showProfileScreen(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done &&
-                snapshot.data == true) {
-                  print("teste");
-                  print(snapshot.data);
-              return Container(
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(
-                      "assets/images/background.png",
-                    ),
-                    fit: BoxFit.fill,
-                  ),
-                ),
-                child: ListView(
+        child: Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(
+                "assets/images/background.png",
+              ),
+              fit: BoxFit.fill,
+            ),
+          ),
+          child: FutureBuilder(
+            future: showProfileScreen(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done &&
+                  snapshot.data == true) {
+                print("teste");
+                print(snapshot.data);
+                return ListView(
                   children: [
                     const SizedBox(
                       height: 10.0,
@@ -140,17 +133,20 @@ class ProfileScreenState extends State<ProfileScreen> {
                       margin: const EdgeInsets.all(15.0),
                       child: Column(
                         children: [
-                          ProfileForm(userData: data,),
+                          ProfileForm(
+                            userData: data,
+                          ),
                         ],
                       ),
                     ),
                   ],
-                ),
-              );
-            } else {
-              return const Center(child: CircularProgressIndicator());
-            }
-          },
+                );
+              } else {
+                return const Center(
+                    child: CircularProgressIndicator(color: Color(0xFF4f4d1f)));
+              }
+            },
+          ),
         ),
       ),
     );

@@ -297,7 +297,7 @@ class _ExtraChoiceScreenState extends State<ExtraChoiceScreen> {
                                   hasIcon: false,
                                   text: "Checkout",
                                   buttonColor: const Color(0xFF4f4d1f),
-                                  sizeWidth: 80.0,
+                                  sizeWidth: 70.0,
                                   onPress: () {
                                     Modular.to.pop();
                                     Navigator.pushNamedAndRemoveUntil(
@@ -314,7 +314,7 @@ class _ExtraChoiceScreenState extends State<ExtraChoiceScreen> {
                                   hasIcon: false,
                                   text: "Buy More",
                                   buttonColor: const Color(0xFF4f4d1f),
-                                  sizeWidth: 80.0,
+                                  sizeWidth: 70.0,
                                   onPress: () async {
                                     Navigator.pushNamedAndRemoveUntil(
                                         context,

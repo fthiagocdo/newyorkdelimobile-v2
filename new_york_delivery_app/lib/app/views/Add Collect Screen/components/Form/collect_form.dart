@@ -1,7 +1,5 @@
 // ignore_for_file: avoid_print, prefer_typing_uninitialized_variables
-
 import 'dart:ui';
-
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -27,6 +25,8 @@ class _CollectFormState extends State<CollectForm> {
   final UserModel user = Modular.get<UserModel>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
+  String originalName = "";
+  String originalPhone = "";
 
   DateTime selectedDate = DateTime.now();
 
@@ -35,8 +35,10 @@ class _CollectFormState extends State<CollectForm> {
       showScreen = false;
     });
     int? shopID = await getMenuTypesDeliObject();
-    if (getDataFromDB) {
-      if (shopID != null) {
+    if (shopID != null) {
+      if (getDataFromDB &&
+          (originalName == _nameController.text) &&
+          (originalPhone == _phoneController.text)) {
         var result;
         try {
           result =
@@ -44,9 +46,12 @@ class _CollectFormState extends State<CollectForm> {
         } catch (e) {
           print('Error on BD:');
           print(e);
+          setState(() {
+            showScreen = true;
+          });
           return showDialogAlert(
             title: "Message",
-            message: "We had a error, please try it again later ",
+            message: "Sorry, We've got an Error, please try later",
             context: context,
             actions: [
               Center(
@@ -64,20 +69,13 @@ class _CollectFormState extends State<CollectForm> {
             ],
           );
         }
-        print(result);
-        setState(() {
-          showScreen = true;
-        });
 
-        // ! go to next screen or call function
-
-      } else {
         setState(() {
           showScreen = true;
         });
         return showDialogAlert(
           title: "Message",
-          message: "We had a error, please try it again later ",
+          message: "We receive your order",
           context: context,
           actions: [
             Center(
@@ -88,117 +86,100 @@ class _CollectFormState extends State<CollectForm> {
                 buttonColor: const Color(0xFF4f4d1f),
                 sizeWidth: 100.0,
                 onPress: () {
-                  Modular.to.pop();
+                  Modular.to.pushNamedAndRemoveUntil('/Menu-Types',
+                      ModalRoute.withName('/Menu-Choice-Extras'));
                 },
               ),
             ),
           ],
         );
-      }
-    } else {
-      return showDialogAlert(
-        title: "Message",
-        message: "Save your details for next time?",
-        context: context,
-        actions: [
-          MainButton(
-            brand: const Icon(Icons.add),
-            hasIcon: false,
-            text: "YES",
-            buttonColor: const Color(0xFF4f4d1f),
-            sizeWidth: 80.0,
-            onPress: () async {
-              var teste;
-              var userInfo;
-              try {
-                try {
-                  userInfo =
-                      await repository.getUser(user.provider, user.providerId);
-                } catch (e) {
-                  throw Exception(e);
-                }
-                
-                try {
-                  teste = await repository.updateUser(
-                    user.id,
-                    _nameController.text,
-                    _phoneController.text,
-                    userInfo.data['details_customer']['customer']['postcode'],
-                    userInfo.data['details_customer']['customer']['address'],
-                    userInfo.data['details_customer']['customer']['receive_notifications'],
-                    user.provider,
-                  );
-                  if (teste.data['error']) {
-                    throw Exception(teste.data['message']);
+      } else {
+        setState(() {
+          showScreen = true;
+        });
+        return showDialogAlert(
+          title: "Message",
+          message: "Save your details for next time?",
+          context: context,
+          actions: [
+            Center(
+              child: MainButton(
+                brand: const Icon(Icons.add),
+                hasIcon: false,
+                text: "YES",
+                buttonColor: const Color(0xFF4f4d1f),
+                sizeWidth: 80.0,
+                onPress: () async {
+                  var teste;
+                  var userInfo;
+                  try {
+                    try {
+                      userInfo = await repository.getUser(
+                          user.provider, user.providerId);
+                    } catch (e) {
+                      throw Exception(e);
+                    }
+
+                    try {
+                      teste = await repository.updateUser(
+                        user.id,
+                        _nameController.text,
+                        _phoneController.text,
+                        userInfo.data['details_customer']['customer']
+                            ['postcode'],
+                        userInfo.data['details_customer']['customer']
+                            ['address'],
+                        userInfo.data['details_customer']['customer']
+                            ['receive_notifications'],
+                        user.provider,
+                      );
+                      if (teste.data['error']) {
+                        throw Exception(teste.data['message']);
+                      }
+                    } catch (e) {
+                      print(e);
+                      throw Exception('Error updating the user info');
+                    }
+
+                    try {
+                      await repository
+                          .confirmCheckout(user.id, shopID.toString(), []);
+                    } catch (e) {
+                      throw Exception('Erro confirming the checkout');
+                    }
+                  } catch (e) {
+                    print('Error on BD');
+                    print(e);
+                    setState(() {
+                      showScreen = true;
+                    });
+                    return showDialogAlert(
+                      title: "Message",
+                      message: "We had a error, please try it again later ",
+                      context: context,
+                      actions: [
+                        Center(
+                          child: MainButton(
+                            brand: const Icon(Icons.add),
+                            hasIcon: false,
+                            text: "OK",
+                            buttonColor: const Color(0xFF4f4d1f),
+                            sizeWidth: 100.0,
+                            onPress: () {
+                              Modular.to
+                                ..pop()
+                                ..pop()
+                                ..pop();
+                            },
+                          ),
+                        ),
+                      ],
+                    );
                   }
-                } catch (e) {
-                  print(e);
-                  throw Exception('Error updating the user info');
-                }
-
-                try {
-                  await repository
-                      .confirmCheckout(user.id, shopID.toString(), []);
-                } catch (e) {
-                  throw Exception('Erro confirming the checkout');
-                }
-              } catch (e) {
-                print('Error on BD');
-                print(e);
-                setState(() {
-                  showScreen = true;
-                });
-                return showDialogAlert(
-                  title: "Message",
-                  message: "We had a error, please try it again later ",
-                  context: context,
-                  actions: [
-                    Center(
-                      child: MainButton(
-                        brand: const Icon(Icons.add),
-                        hasIcon: false,
-                        text: "OK",
-                        buttonColor: const Color(0xFF4f4d1f),
-                        sizeWidth: 100.0,
-                        onPress: () {
-                          Modular.to
-                            ..pop()
-                            ..pop()
-                            ..pop();
-                        },
-                      ),
-                    ),
-                  ],
-                );
-              }
-
-              setState(() {
-                showScreen = true;
-              });
-              print("DEU BOM NEGRADA");
-              print(teste.data);
-              Modular.to.pop();
-            },
-          ),
-          MainButton(
-            brand: const Icon(Icons.add),
-            hasIcon: false,
-            text: "NO",
-            buttonColor: const Color(0xFF4f4d1f),
-            sizeWidth: 80.0,
-            onPress: () async {
-              int? shopID = await getMenuTypesDeliObject();
-              if (shopID != null) {
-                var result;
-                try {
-                  result = await repository
-                      .confirmCheckout(user.id, shopID.toString(), []);
-                } catch (e) {
-                  print('Error on BD:');
-                  print(e);
+                  // Modular.to.pop();
                   return showDialogAlert(
                     title: "Message",
-                    message: "We had a error, please try it again later ",
+                    message: "We receive your order",
                     context: context,
                     actions: [
                       Center(
@@ -209,24 +190,58 @@ class _CollectFormState extends State<CollectForm> {
                           buttonColor: const Color(0xFF4f4d1f),
                           sizeWidth: 100.0,
                           onPress: () {
-                            Modular.to.pop();
+                            Modular.to.pushNamedAndRemoveUntil('/Menu-Types',
+                                ModalRoute.withName('/Menu-Choice-Extras'));
                           },
                         ),
                       ),
                     ],
                   );
-                }
-                print(result);
-                setState(() {
-                  showScreen = true;
-                });
-                Modular.to.pop();
-                // ! go to next screen or call function
-              }
-            },
-          ),
-        ],
-      );
+                },
+              ),
+            ),
+            Center(
+              child: MainButton(
+                brand: const Icon(Icons.add),
+                hasIcon: false,
+                text: "NO",
+                buttonColor: const Color(0xFF4f4d1f),
+                sizeWidth: 80.0,
+                onPress: () async {
+                  try {
+                    await repository
+                        .confirmCheckout(user.id, shopID.toString(), []);
+                  } catch (e) {
+                    print("Error on BD");
+                    print(e);
+                  }
+                  // Modular.to.pop();
+                  return showDialogAlert(
+                    title: "Message",
+                    message: "We receive your order",
+                    context: context,
+                    actions: [
+                      Center(
+                        child: MainButton(
+                          brand: const Icon(Icons.add),
+                          hasIcon: false,
+                          text: "OK",
+                          buttonColor: const Color(0xFF4f4d1f),
+                          sizeWidth: 100.0,
+                          onPress: () {
+                            Modular.to.pushNamedAndRemoveUntil('/Menu-Types',
+                                ModalRoute.withName('/Menu-Choice-Extras'));
+                          },
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
+          ],
+        );
+      }
     }
   }
 
@@ -251,6 +266,9 @@ class _CollectFormState extends State<CollectForm> {
       _nameController.text =
           result.data['details_customer']['customer']['name'];
       _phoneController.text =
+          result.data['details_customer']['customer']['phone_number'];
+      originalName = result.data['details_customer']['customer']['name'];
+      originalPhone =
           result.data['details_customer']['customer']['phone_number'];
       setState(() {
         showScreen = true;
@@ -336,6 +354,8 @@ class _CollectFormState extends State<CollectForm> {
                 height: 10.0,
               ),
               DateTimePicker(
+                cursorColor: const Color(0xFF4f4d1f),
+                style: const TextStyle(color: Color(0xFF4f4d1f)),
                 type: DateTimePickerType.time,
 
                 initialValue:

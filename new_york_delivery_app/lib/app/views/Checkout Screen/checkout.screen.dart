@@ -46,7 +46,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               );
             } else {
               return const Center(
-                child: CircularProgressIndicator(),
+                child: CircularProgressIndicator(color: Color(0xFF4f4d1f),),
               );
             }
           },

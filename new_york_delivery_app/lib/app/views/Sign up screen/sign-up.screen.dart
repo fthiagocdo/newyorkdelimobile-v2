@@ -66,7 +66,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               );
             }else{
               return const Center(
-                child: CircularProgressIndicator(),
+                child: CircularProgressIndicator(color: Color(0xFF4f4d1f)),
               );
             }
           },

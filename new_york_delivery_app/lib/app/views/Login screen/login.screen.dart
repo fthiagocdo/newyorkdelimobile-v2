@@ -169,7 +169,7 @@ class _LoginScreenState extends State<LoginScreen> {
               }
             }
             // data is not ready yet!
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator(color: Color(0xFF4f4d1f)));
           },
         ),
       ),

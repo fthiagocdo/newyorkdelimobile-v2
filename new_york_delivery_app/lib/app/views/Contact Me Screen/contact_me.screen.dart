@@ -2,8 +2,8 @@
 
 import 'dart:math';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:new_york_delivery_app/app/components/MainButton/main_button.dart';
 import 'package:new_york_delivery_app/app/components/Menu/menu.dart';
@@ -23,7 +23,6 @@ class ContactMeScreen extends StatefulWidget {
 class _ContactMeScreenState extends State<ContactMeScreen> {
   ApiClientRepository apiClientRepository = Modular.get<ApiClientRepository>();
   Map data = {"firebaseInfo": {}, "userInfo": {}};
-  
 
   Future<void> showContactMeScreen() async {
     User? user;
@@ -32,7 +31,6 @@ class _ContactMeScreenState extends State<ContactMeScreen> {
     } catch (e) {
       print(e);
       print("We had some problems with firebase connection, please try later");
-      
     }
     if (user != null) {
       // ignore: prefer_typing_uninitialized_variables
@@ -48,7 +46,7 @@ class _ContactMeScreenState extends State<ContactMeScreen> {
       }
       data["userInfo"] = result.data;
       data["hasData"] = true;
-    }else{
+    } else {
       data["hasData"] = false;
     }
   }
@@ -65,20 +63,20 @@ class _ContactMeScreenState extends State<ContactMeScreen> {
       ),
       drawer: const Menu(),
       body: SafeArea(
-        child: FutureBuilder(
-          future: showContactMeScreen(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              return Container(
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(
-                      "assets/images/background.png",
-                    ),
-                    fit: BoxFit.fill,
-                  ),
-                ),
-                child: ListView(
+        child: Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(
+                "assets/images/background.png",
+              ),
+              fit: BoxFit.fill,
+            ),
+          ),
+          child: FutureBuilder(
+            future: showContactMeScreen(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return ListView(
                   children: [
                     const SizedBox(
                       height: 10.0,
@@ -119,22 +117,22 @@ class _ContactMeScreenState extends State<ContactMeScreen> {
                           const SizedBox(
                             height: 10.0,
                           ),
-                          ContactForm(
-                            userData: data 
-                          ),
+                          ContactForm(userData: data),
                           // const SignUpForm()
                         ],
                       ),
                     ),
                   ],
-                ),
-              );
-            } else {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-          },
+                );
+              } else {
+                return const Center(
+                  child: CircularProgressIndicator(
+                    color: Color(0xFF4f4d1f),
+                  ),
+                );
+              }
+            },
+          ),
         ),
       ),
     );

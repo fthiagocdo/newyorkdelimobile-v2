@@ -76,20 +76,20 @@ class _MenuItemScreenState extends State<MenuItemScreen> {
         ),
       ),
       body: SafeArea(
-        child: FutureBuilder<Map>(
-          future: getMenuItensDeli(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              return Container(
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(
-                      "assets/images/background.png",
-                    ),
-                    fit: BoxFit.fill,
-                  ),
-                ),
-                child: Column(
+        child: Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(
+                "assets/images/background.png",
+              ),
+              fit: BoxFit.fill,
+            ),
+          ),
+          child: FutureBuilder<Map>(
+            future: getMenuItensDeli(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     SizedBox(
@@ -117,7 +117,11 @@ class _MenuItemScreenState extends State<MenuItemScreen> {
                         },
                         errorBuilder: (BuildContext context, Object exception,
                             StackTrace? stackTrace) {
-                          return const Center(child: Text('😢',style: TextStyle(fontSize: 80.0),));
+                          return const Center(
+                              child: Text(
+                            '😢',
+                            style: TextStyle(fontSize: 80.0),
+                          ));
                         },
                       ),
                     ),
@@ -147,14 +151,14 @@ class _MenuItemScreenState extends State<MenuItemScreen> {
                       ),
                     ),
                   ],
-                ),
-              );
-            } else {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-          },
+                );
+              } else {
+                return const Center(
+                  child: CircularProgressIndicator(color: Color(0xFF4f4d1f)),
+                );
+              }
+            },
+          ),
         ),
       ),
     );
